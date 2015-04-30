@@ -6,7 +6,7 @@ import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
 import es.uam.eps.ir.split.SplitIF;
 import es.uam.eps.ir.metrics.MetricIF;
-import es.uam.eps.ir.metrics.Metric_RMSE;
+import es.uam.eps.ir.metrics.error.Metric_RMSE;
 import es.uam.eps.ir.metrics.Recommendation;
 import es.uam.eps.ir.metrics.RecommendationIF;
 import es.uam.eps.ir.optimization.jtem.RealFunctionOfSeveralVariables;

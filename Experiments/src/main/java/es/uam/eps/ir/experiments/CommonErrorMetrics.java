@@ -1,9 +1,9 @@
 package es.uam.eps.ir.experiments;
 
-import es.uam.eps.ir.cars.neighborhood.PearsonWeightedSimilarity;
-import es.uam.eps.ir.cars.neighborhood.SimilarityComputerIF;
+import es.uam.eps.ir.core.similarity.PearsonWeightedSimilarity;
+import es.uam.eps.ir.core.similarity.SimilarityComputerIF;
 import es.uam.eps.ir.core.context.ContextIF;
-import es.uam.eps.ir.metrics.ErrorMetricBuilder;
+import es.uam.eps.ir.metrics.error.ErrorMetricBuilder;
 import es.uam.eps.ir.metrics.MetricIF;
 import es.uam.eps.ir.split.SplitIF;
 
@@ -70,7 +70,6 @@ public class CommonErrorMetrics<U,I,C extends ContextIF> {
     
     private MetricIF<U,I,C> getIndividualMetric(ErrorMetricBuilder.METRIC theMetric){
         MetricIF<U,I,C> _metric = new ErrorMetricBuilder<U,I,C>()
-                .similarityComputer(simComputer)
                 .split(split)
                 .buildMetric(theMetric);
         return _metric;
