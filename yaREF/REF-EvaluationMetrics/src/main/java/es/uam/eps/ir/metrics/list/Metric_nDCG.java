@@ -1,6 +1,8 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.list;
 
 import es.uam.eps.ir.core.context.ContextIF;
+import es.uam.eps.ir.metrics.RecommendationIF;
+import es.uam.eps.ir.metrics.RecommendationListMetricIF;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Set;

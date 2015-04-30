@@ -1,5 +1,10 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.error;
 
+import es.uam.eps.ir.metrics.AbstractMetric;
+import es.uam.eps.ir.metrics.BasicMetricResults;
+import es.uam.eps.ir.metrics.MetricIF;
+import es.uam.eps.ir.metrics.MetricResultsIF;
+import es.uam.eps.ir.metrics.RecommendationIF;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,8 +13,8 @@ import java.util.Set;
  *
  * @author pedro
  */
-public abstract class AbstractPredictionMetric<U,I,C> extends AbstractMetric<U,I,C> implements MetricIF<U,I,C> {
-    AbstractPredictionMetric(){
+public abstract class AbstractErrorMetric<U,I,C> extends AbstractMetric<U,I,C> implements MetricIF<U,I,C> {
+    AbstractErrorMetric(){
         super();
     }
 

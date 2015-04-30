@@ -1,5 +1,6 @@
-package es.uam.eps.ir.cars.neighborhood;
+package es.uam.eps.ir.metrics.util;
 
+import es.uam.eps.ir.core.similarity.SimilarityComputerIF;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import java.util.HashMap;

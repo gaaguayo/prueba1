@@ -1,6 +1,8 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.error;
 
 import es.uam.eps.ir.core.context.ContextIF;
+import es.uam.eps.ir.metrics.MetricIF;
+import es.uam.eps.ir.metrics.RecommendationIF;
 import es.uam.eps.ir.split.SplitIF;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Set;
  * 
  * @author pedro
  */
-public class Metric_RMSE<U,I,C extends ContextIF> extends AbstractPredictionMetric<U,I,C> implements MetricIF<U,I,C>{
+public class Metric_RMSE_Personalized<U,I,C extends ContextIF> extends AbstractErrorMetric<U,I,C> implements MetricIF<U,I,C>{
     SplitIF<U,I,C> split;
     protected Map<Object,Integer> userPredsRmse;
     protected Object lastUserID;
@@ -18,7 +20,7 @@ public class Metric_RMSE<U,I,C extends ContextIF> extends AbstractPredictionMetr
     protected int predictionsCount;
     protected double acummSqError;
     
-    public Metric_RMSE(SplitIF<U,I,C> split) {
+    public Metric_RMSE_Personalized(SplitIF<U,I,C> split) {
         super();
         this.split=split;
         init();
@@ -38,7 +40,7 @@ public class Metric_RMSE<U,I,C extends ContextIF> extends AbstractPredictionMetr
 
     @Override
     public String shortName() {
-        return "RMSE";
+        return "RMSE_Pers";
     }
     
 
@@ -69,6 +71,9 @@ public class Metric_RMSE<U,I,C extends ContextIF> extends AbstractPredictionMetr
         // If recommended item is not part of test set, then no further processing is needed
         I itemID=recommendation.getItemID();
         if (split.getTestingSet().getPreferenceValue(userID, itemID, null) == null)
+            return;
+        
+        if (!recommendation.isPersonalized())
             return;
         
         // Process Recommendation

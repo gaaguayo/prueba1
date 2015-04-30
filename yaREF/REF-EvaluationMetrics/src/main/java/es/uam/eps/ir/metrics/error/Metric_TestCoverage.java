@@ -1,7 +1,9 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.error;
 
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.util.ContextualModelUtils;
+import es.uam.eps.ir.metrics.MetricIF;
+import es.uam.eps.ir.metrics.RecommendationIF;
 import es.uam.eps.ir.split.SplitIF;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +13,7 @@ import java.util.Set;
  *
  * @author pedro
  */
-public class Metric_TestUsersCoverage<U,I,C extends ContextIF> extends AbstractPredictionMetric<U,I,C> implements MetricIF<U,I,C>{
+public class Metric_TestCoverage<U,I,C extends ContextIF> extends AbstractErrorMetric<U,I,C> implements MetricIF<U,I,C>{
     SplitIF<U,I,C> split;
     ContextualModelUtils<U,I,C> eModelTest;
     protected Map<U,Integer> userPredsMap;
@@ -22,7 +24,7 @@ public class Metric_TestUsersCoverage<U,I,C extends ContextIF> extends AbstractP
     protected int totalCount;
     protected double acummError;
     
-    public Metric_TestUsersCoverage(SplitIF<U,I,C> split) {
+    public Metric_TestCoverage(SplitIF<U,I,C> split) {
         super();
         this.split = split;
         init();
@@ -45,29 +47,52 @@ public class Metric_TestUsersCoverage<U,I,C extends ContextIF> extends AbstractP
 
     @Override
     public String shortName() {
-        return "Cov_TestUsers";
+        return "Cov_Test";
     }
     
 
     @Override
     protected void finishComputation() {
         // Computing overall Test Coverage
-        metric=(double)usersCount/(double)split.getTestingSet().getUsers().size();
+        metric=(double)predictionsCount/(double)totalCount;
         
         super.finishComputation();
     }
 
 
     protected void processNextRecommendation(U userID, RecommendationIF<I> recommendation, Set<I> userRelevantSet, Set<I> userNotRelevantSet) {
+//    protected void processNextRecommendation(Object userID, Recommendation recommendation, TrainingTestSplit sample) {
         if (lastUserID != userID){ // Processing a new recommendation list
             usersCount++;
             lastUserID=userID;
-        }        
+            userMetric.put(userID, new Double(0.0));
+            userPredsMap.put(userID, new Integer(0));
+            userTotalMap.put(userID, new Integer(0));
+        }
+        
+        // If recommended item is not part of test set, then no further processing is needed
+        I itemID=recommendation.getItemID();
+        if (split.getTestingSet().getPreferences(userID, itemID) == null)
+            return;
+        
+        
+        // count as covered
+        userPredsMap.put(userID, userPredsMap.get(userID) + 1);
+        predictionsCount++;
+        
+        // Total count
+        userTotalMap.put(userID, eModelTest.getUserAggregatedRatingCount(userID));
+        totalCount=eModelTest.getAggregatedRatingCount();
+
+        
+        double user_cov=(double)userPredsMap.get(userID) / (double)userTotalMap.get(userID);
+        userMetric.put(userID, user_cov);
     }
     
 
     public void reset() {
         init();
     }
+
     
 }

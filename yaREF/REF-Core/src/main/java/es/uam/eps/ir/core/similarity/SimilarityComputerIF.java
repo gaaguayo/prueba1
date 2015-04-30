@@ -1,4 +1,4 @@
-package es.uam.eps.ir.cars.neighborhood;
+package es.uam.eps.ir.core.similarity;
 
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;

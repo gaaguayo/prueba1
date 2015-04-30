@@ -1,7 +1,9 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.list;
 
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.util.ContextualModelUtils;
+import es.uam.eps.ir.metrics.RecommendationIF;
+import es.uam.eps.ir.metrics.RecommendationListMetricIF;
 import es.uam.eps.ir.split.SplitIF;
 import java.util.Collection;
 import java.util.List;

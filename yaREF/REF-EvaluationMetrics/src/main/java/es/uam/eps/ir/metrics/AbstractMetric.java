@@ -12,7 +12,7 @@ public abstract class AbstractMetric<U,I,C> implements MetricIF<U,I,C>{
     protected boolean computationFinished;
 
     
-    AbstractMetric(){
+    protected AbstractMetric(){
         this.metric=0.0;
         this.computationFinished=false;
     }

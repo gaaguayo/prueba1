@@ -1,88 +1,89 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.error;
 
 import es.uam.eps.ir.core.context.ContextIF;
+import es.uam.eps.ir.metrics.MetricIF;
+import es.uam.eps.ir.metrics.RecommendationIF;
 import es.uam.eps.ir.split.SplitIF;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * 
+ *
  * @author pedro
  */
-public class Metric_acc1<U,I,C extends ContextIF> extends AbstractPredictionMetric<U,I,C> implements MetricIF<U,I,C>{
-    SplitIF<U,I,C> split;
-    protected Map<Object,Integer> userPredsRmse;
-    protected Object lastUserID;
+public class Metric_MAE<U,I,C extends ContextIF> extends AbstractErrorMetric<U,I,C> implements MetricIF<U,I,C>{
+    protected SplitIF<U,I,C> split;
+    protected Map<U,Integer> userPredsMap;
+    protected U lastUserID;
     protected int usersCount;
     protected int predictionsCount;
-    protected double acummSqError;
+    protected double acummError;
     
-    public Metric_acc1(SplitIF<U,I,C> split) {
+    public Metric_MAE(SplitIF<U,I,C> split) {
         super();
-        this.split=split;
+        this.split = split;
         init();
     }
     
     @Override
     protected final void init(){
         userMetric=new HashMap();
-        userPredsRmse=new HashMap();
+        userPredsMap=new HashMap();
         lastUserID=null;
         usersCount=0;
         predictionsCount=0;
-        acummSqError=0.0;
+        acummError=0.0;
         
         super.init();
     }
 
     @Override
     public String shortName() {
-        return "RMSE";
+        return "MAE";
     }
     
 
     @Override
     protected void finishComputation() {
-        //Computing per-user RMSE
+        //Computing per-user MAE
         for (U userID:userMetric.keySet()){
-            double userRMSE=Math.sqrt(userMetric.get(userID)/(double)userPredsRmse.get(userID));
-            userMetric.put(userID, userRMSE);
+            double userMAE=userMetric.get(userID)/(double)userPredsMap.get(userID);
+            userMetric.put(userID, userMAE);
         }
         
         // Computing overall MAE
-        metric=Math.sqrt(acummSqError/(double)predictionsCount);
+        metric=acummError/(double)predictionsCount;
         
         super.finishComputation();
     }
 
 
     protected void processNextRecommendation(U userID, RecommendationIF<I> recommendation, Set<I> userRelevantSet, Set<I> userNotRelevantSet) {
+//    protected void processNextRecommendation(Object userID, Recommendation recommendation, TrainingTestSplit sample) {
         if (lastUserID != userID){ // Processing a new recommendation list
             usersCount++;
             lastUserID=userID;
             userMetric.put(userID, new Double(0.0));
-            userPredsRmse.put(userID, new Integer(0));
+            userPredsMap.put(userID, new Integer(0));
         }
-        
         
         // If recommended item is not part of test set, then no further processing is needed
         I itemID=recommendation.getItemID();
-        if (split.getTestingSet().getPreferenceValue(userID, itemID, null) == null)
+        if (split.getTestingSet().getPreferences(userID, itemID) == null)
             return;
         
         // Process Recommendation
-        userPredsRmse.put(userID, userPredsRmse.get(userID) + 1);
+        userPredsMap.put(userID, userPredsMap.get(userID) + 1);
         predictionsCount++;
         
         // Computing error
-        float rating=split.getTestingSet().getPreferenceValue(userID, itemID, null);
+        Float rating=split.getTestingSet().getPreferenceValue(userID, itemID, null);
         double error=Math.abs(recommendation.getValue() - rating);
-        double sqError=error*error;
         
         //Acummulating error
-        acummSqError+=sqError;
-        userMetric.put(userID, userMetric.get(userID) + sqError);
+        acummError+=error;
+        userMetric.put(userID, userMetric.get(userID) + error);
     }
     
 
@@ -90,7 +91,5 @@ public class Metric_acc1<U,I,C extends ContextIF> extends AbstractPredictionMetr
         init();
     }
 
-    public int getNumberOfEvaluations(){
-        return this.predictionsCount;
-    }
+    
 }

@@ -1,5 +1,10 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.list;
 
+import es.uam.eps.ir.metrics.AbstractMetric;
+import es.uam.eps.ir.metrics.BasicMetricResults;
+import es.uam.eps.ir.metrics.MetricResultsIF;
+import es.uam.eps.ir.metrics.RecommendationIF;
+import es.uam.eps.ir.metrics.RecommendationListMetricIF;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;

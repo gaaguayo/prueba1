@@ -1,8 +1,8 @@
 package es.uam.eps.ir.cars.contextualfiltering;
 
 import es.uam.eps.ir.cars.neighborhood.NeighborhoodIF;
-import es.uam.eps.ir.cars.neighborhood.PearsonWeightedSimilarity;
-import es.uam.eps.ir.cars.neighborhood.SimilarityComputerIF;
+import es.uam.eps.ir.core.similarity.PearsonWeightedSimilarity;
+import es.uam.eps.ir.core.similarity.SimilarityComputerIF;
 import es.uam.eps.ir.cars.neighborhood.SimilarityDatumIF;
 import es.uam.eps.ir.cars.neighborhood.UserNeighborhoodComputer;
 import es.uam.eps.ir.cars.recommender.AbstractRecommender;

@@ -1,11 +1,8 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.error;
 
-import es.uam.eps.ir.cars.neighborhood.PearsonWeightedSimilarity;
-import es.uam.eps.ir.cars.neighborhood.SimilarityComputerIF;
 import es.uam.eps.ir.core.context.ContextIF;
+import es.uam.eps.ir.metrics.MetricIF;
 import es.uam.eps.ir.split.SplitIF;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  *
@@ -23,13 +20,8 @@ public class ErrorMetricBuilder<U,I,C extends ContextIF> {
         TEST_USERS_COVERAGE,
     }
     
-    private SimilarityComputerIF<U,I,C> simComputer = new PearsonWeightedSimilarity<U,I,C>();
     private SplitIF<U,I,C> split;
     
-    public ErrorMetricBuilder<U,I,C> similarityComputer(SimilarityComputerIF<U,I,C> simComputer){
-        this.simComputer = simComputer;
-        return this;
-    }
     
     public ErrorMetricBuilder<U,I,C> split(SplitIF<U,I,C> split){
         this.split = split;

@@ -1,6 +1,9 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.error;
 
 import es.uam.eps.ir.core.context.ContextIF;
+import es.uam.eps.ir.core.util.ContextualModelUtils;
+import es.uam.eps.ir.metrics.MetricIF;
+import es.uam.eps.ir.metrics.RecommendationIF;
 import es.uam.eps.ir.split.SplitIF;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,15 +13,18 @@ import java.util.Set;
  *
  * @author pedro
  */
-public class Metric_MAE<U,I,C extends ContextIF> extends AbstractPredictionMetric<U,I,C> implements MetricIF<U,I,C>{
-    protected SplitIF<U,I,C> split;
+public class Metric_TestPersonalized<U,I,C extends ContextIF> extends AbstractErrorMetric<U,I,C> implements MetricIF<U,I,C>{
+    SplitIF<U,I,C> split;
+    ContextualModelUtils<U,I,C> eModelTest;
     protected Map<U,Integer> userPredsMap;
+    protected Map<U,Integer> userTotalMap;
     protected U lastUserID;
     protected int usersCount;
     protected int predictionsCount;
+    protected int totalCount;
     protected double acummError;
     
-    public Metric_MAE(SplitIF<U,I,C> split) {
+    public Metric_TestPersonalized(SplitIF<U,I,C> split) {
         super();
         this.split = split;
         init();
@@ -28,30 +34,27 @@ public class Metric_MAE<U,I,C extends ContextIF> extends AbstractPredictionMetri
     protected final void init(){
         userMetric=new HashMap();
         userPredsMap=new HashMap();
+        userTotalMap=new HashMap();
         lastUserID=null;
         usersCount=0;
         predictionsCount=0;
+        totalCount=0;
         acummError=0.0;
+        this.eModelTest = new ContextualModelUtils<U,I,C>(split.getTestingSet());
         
         super.init();
     }
 
     @Override
     public String shortName() {
-        return "MAE";
+        return "Pers_Test";
     }
     
 
     @Override
     protected void finishComputation() {
-        //Computing per-user MAE
-        for (U userID:userMetric.keySet()){
-            double userMAE=userMetric.get(userID)/(double)userPredsMap.get(userID);
-            userMetric.put(userID, userMAE);
-        }
-        
-        // Computing overall MAE
-        metric=acummError/(double)predictionsCount;
+        // Computing overall Test Coverage
+        metric=(double)predictionsCount/(double)totalCount;
         
         super.finishComputation();
     }
@@ -64,6 +67,7 @@ public class Metric_MAE<U,I,C extends ContextIF> extends AbstractPredictionMetri
             lastUserID=userID;
             userMetric.put(userID, new Double(0.0));
             userPredsMap.put(userID, new Integer(0));
+            userTotalMap.put(userID, new Integer(0));
         }
         
         // If recommended item is not part of test set, then no further processing is needed
@@ -71,17 +75,21 @@ public class Metric_MAE<U,I,C extends ContextIF> extends AbstractPredictionMetri
         if (split.getTestingSet().getPreferences(userID, itemID) == null)
             return;
         
-        // Process Recommendation
-        userPredsMap.put(userID, userPredsMap.get(userID) + 1);
-        predictionsCount++;
         
-        // Computing error
-        Float rating=split.getTestingSet().getPreferenceValue(userID, itemID, null);
-        double error=Math.abs(recommendation.getValue() - rating);
+        // If the engine was able to compute a personalized recommendation
+        if (recommendation.isPersonalized()){
+            // count as covered
+            userPredsMap.put(userID, userPredsMap.get(userID) + 1);
+            predictionsCount++;
+        }
         
-        //Acummulating error
-        acummError+=error;
-        userMetric.put(userID, userMetric.get(userID) + error);
+        // Total count
+        userTotalMap.put(userID, eModelTest.getUserAggregatedRatingCount(userID));
+        totalCount=eModelTest.getAggregatedRatingCount();
+
+        
+        double user_cov=(double)userPredsMap.get(userID) / (double)userTotalMap.get(userID);
+        userMetric.put(userID, user_cov);
     }
     
 

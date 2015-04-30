@@ -1,8 +1,9 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.list;
 
-import es.uam.eps.ir.cars.neighborhood.PearsonWeightedSimilarity;
-import es.uam.eps.ir.cars.neighborhood.SimilarityComputerIF;
 import es.uam.eps.ir.core.context.ContextIF;
+import es.uam.eps.ir.core.similarity.PearsonWeightedSimilarity;
+import es.uam.eps.ir.core.similarity.SimilarityComputerIF;
+import es.uam.eps.ir.metrics.MetricIF;
 import es.uam.eps.ir.split.SplitIF;
 import java.util.Arrays;
 import java.util.List;

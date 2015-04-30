@@ -1,7 +1,8 @@
-package es.uam.eps.ir.metrics;
+package es.uam.eps.ir.metrics.list;
 
 import es.uam.eps.ir.core.context.ContextIF;
-import java.security.InvalidParameterException;
+import es.uam.eps.ir.metrics.RecommendationIF;
+import es.uam.eps.ir.metrics.RecommendationListMetricIF;
 import java.util.List;
 import java.util.Set;
 
@@ -9,11 +10,11 @@ import java.util.Set;
  *
  * @author pedro
  */
-public class Metric_Recall<U,I,C extends ContextIF> extends AbstractRecommendationListMetric<U,I,C> implements RecommendationListMetricIF<U,I,C>{
+public class Metric_CandidateItems<U,I,C extends ContextIF> extends AbstractRecommendationListMetric<U,I,C> implements RecommendationListMetricIF<U,I,C>{
     protected int relevantsRecommended;    
     
-    public Metric_Recall(List<Integer> levels) {
-        super(levels);
+    public Metric_CandidateItems(List<Integer> levels) {
+        super(null);
         init();
     }
     
@@ -27,17 +28,15 @@ public class Metric_Recall<U,I,C extends ContextIF> extends AbstractRecommendati
 
     @Override
     public String shortName() {
-        return "R";
+        return "Targets";
     }
 
     protected void initValues(U user, List<RecommendationIF<I>> userRecommendations, Set<I> userRelevantSet, Set<I> userNotRelevantSet){
         recommendationPosition=0;
         relevantsRecommended=0;
-        if (userRelevantSet.isEmpty()){
-            throw new InvalidParameterException("There are no relevant items for user " + user + "!");
-        }
     }
     
+
     @Override
     protected double processNextRecommendation(RecommendationIF<I> recommendation, Set<I> userRelevantSet, Set<I> userNotRelevantSet){
         if (isRelevant(recommendation,userRelevantSet)){ // item in relevant items
@@ -45,12 +44,11 @@ public class Metric_Recall<U,I,C extends ContextIF> extends AbstractRecommendati
         }
 
         // Computing Recall at actual level
-        double recall = (double)relevantsRecommended/(double)userRelevantSet.size();        
-        return recall;
+        double items = recommendationPosition;
+        return items;
     }
     
     public void reset() {
         init();
     }
-
 }
