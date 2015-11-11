@@ -21,19 +21,20 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.MovieLens100k;
+        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
         // Dataset_ItemSplit
         item_split = false;
         minContextSizeForSplitting = 5;
 //        is_impurity = new MeanImpurity(1.7); // kNN min3, Mean1.7, IG0.6 Popr1.0
         is_impurity = new FisherExactImpurity(0.4); // MF-30-10 min3, Mean1.7
 //        is_contexts = Arrays.asList(TimeContextItemSplitter.TimeContext.PeriodOfDay1.name());
-        is_contexts = Arrays.asList("Day");
+        is_contexts = Arrays.asList("cuadrante");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype");
+        filtering_contexts = Arrays.asList("cuadrante");
     
         // Evaluation Methodology
-        split_method        = CommonDatasetSplitters.METHOD.CommunityTimeOrderProportionHoldout;
+        split_method        = CommonDatasetSplitters.METHOD.CommunityRandomOrderProportionHoldout;
         testProportion = 0.1;  // 0.085 for Ml100k // 0.054 for Ml1m
         testSize = 10;
         candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.USER_TEST;
@@ -45,7 +46,7 @@ public class Experiment extends Experiment_Main
         genTrainingAndTestFiles = false;
     
         // Evaluation Metrics
-        rankingMetrics = CommonRankingMetrics.METRICS.NONE;
+        rankingMetrics = CommonRankingMetrics.METRICS.BASIC;
         errorMetrics = CommonErrorMetrics.METRICS.ALL;
         levels = Arrays.asList(5,10,20,50);
     
@@ -58,7 +59,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.ContextualPRF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualPOF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualFPOF_MahoutUserBased;
-//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
+        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_POF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased_Categorical;
@@ -89,7 +90,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.MF_Default;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
-        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
+//        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     

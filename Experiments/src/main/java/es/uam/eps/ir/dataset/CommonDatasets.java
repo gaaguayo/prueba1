@@ -14,6 +14,9 @@ public class CommonDatasets<U,I,C extends ContextIF> {
     public enum DATASET{
         
         // Timestamped
+// Timestamped
+// Timestamped
+// Timestamped
         CAMRa2010_FT,
         CAMRa2011t1,
         CAMRa2011t2,
@@ -45,7 +48,8 @@ public class CommonDatasets<U,I,C extends ContextIF> {
         Context_Musicians_IRG,
         Context_LDOS_CoMoDa,
         Context_Adomavicius,
-        FoursquareCuadrantes,
+        FoursquareQuadrants,
+        FoursquareQuadrantsCategorical,
     }
     
     private String[] args;
@@ -149,8 +153,11 @@ public class CommonDatasets<U,I,C extends ContextIF> {
             case Context_Adomavicius:
                 dataset = new Context_Adomavicius_Dataset(args);
                 break;
-            case FoursquareCuadrantes:
-                dataset = new FoursquareCuadrantesDataset(args);
+            case FoursquareQuadrants:
+                dataset = new FoursquareQuadrantsDataset(args);
+                break;
+            case FoursquareQuadrantsCategorical:
+                dataset = new FoursquareQuadrantsCategoricalDataset(args);
                 break;
                 
         }

@@ -7,18 +7,18 @@ import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
  *
  * @author pedro
  */
-public class FoursquareCuadrantesDataset<U,I,C extends ContinuousTimeContextIF> extends AbstractDataset<U,I,C> implements DatasetIF<U,I,C>{
+public class FoursquareQuadrantsDataset<U,I,C extends ContinuousTimeContextIF> extends AbstractDataset<U,I,C> implements DatasetIF<U,I,C>{
 
-    public FoursquareCuadrantesDataset(String path, String file) {
+    public FoursquareQuadrantsDataset(String path, String file) {
         super(path, file);
     }
     
-    public FoursquareCuadrantesDataset(String[] args) {
+    public FoursquareQuadrantsDataset(String[] args) {
         super(args);
     }
     
 
-    public FoursquareCuadrantesDataset() {
+    public FoursquareQuadrantsDataset() {
         super();
     }
     
@@ -36,6 +36,6 @@ public class FoursquareCuadrantesDataset<U,I,C extends ContinuousTimeContextIF> 
     }
     
     public final String name(){
-        return "FoursquareCuadrantes";
+        return "FoursquareQuadrants";
     }    
 }
