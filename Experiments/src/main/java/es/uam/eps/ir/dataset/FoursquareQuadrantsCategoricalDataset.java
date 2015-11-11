@@ -1,11 +1,10 @@
 package es.uam.eps.ir.dataset;
 
-import es.uam.eps.ir.cars.model.CategoricalContextModelReader;
+import es.uam.eps.ir.cars.model.TimestampedCategoricalContextModelReader;
 import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,11 +33,13 @@ public class FoursquareQuadrantsCategoricalDataset<U,I,C extends ContextIF> exte
     }
     
     protected final void setReader(){
-        reader = new CategoricalContextModelReader<>();
-        CategoricalContextModelReader<U,I,C> theReader=(CategoricalContextModelReader<U,I,C>)reader;
+        reader = new TimestampedCategoricalContextModelReader<>();
+        TimestampedCategoricalContextModelReader<U,I,C> theReader=(TimestampedCategoricalContextModelReader<U,I,C>)reader;
         theReader.setDelimiter("\t");
         theReader.setUserIndex(0);
         theReader.setItemIndex(1);
+        theReader.setTimestampIndex(3);
+        theReader.setTimestampFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         
         int firstID=1;
         int lastID=300;
@@ -53,7 +54,7 @@ public class FoursquareQuadrantsCategoricalDataset<U,I,C extends ContextIF> exte
     }
     
     public List<ContextDefinition> getContextDefinitions(){
-        CategoricalContextModelReader<U,I,C> theReader=(CategoricalContextModelReader<U,I,C>)reader;
+        TimestampedCategoricalContextModelReader<U,I,C> theReader=(TimestampedCategoricalContextModelReader<U,I,C>)reader;
         return theReader.getContextDefinitions();
     }
     
