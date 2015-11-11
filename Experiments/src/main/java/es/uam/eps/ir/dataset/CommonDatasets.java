@@ -45,6 +45,7 @@ public class CommonDatasets<U,I,C extends ContextIF> {
         Context_Musicians_IRG,
         Context_LDOS_CoMoDa,
         Context_Adomavicius,
+        FoursquareCuadrantes,
     }
     
     private String[] args;
@@ -147,6 +148,9 @@ public class CommonDatasets<U,I,C extends ContextIF> {
                 break;
             case Context_Adomavicius:
                 dataset = new Context_Adomavicius_Dataset(args);
+                break;
+            case FoursquareCuadrantes:
+                dataset = new FoursquareCuadrantesDataset(args);
                 break;
                 
         }

@@ -21,9 +21,9 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.Context_Movies_IRG;
+        dataset_name = CommonDatasets.DATASET.MovieLens100k;
         // Dataset_ItemSplit
-        item_split = true;
+        item_split = false;
         minContextSizeForSplitting = 5;
 //        is_impurity = new MeanImpurity(1.7); // kNN min3, Mean1.7, IG0.6 Popr1.0
         is_impurity = new FisherExactImpurity(0.4); // MF-30-10 min3, Mean1.7
@@ -33,7 +33,7 @@ public class Experiment extends Experiment_Main
 //        filtering_contexts = Arrays.asList("daytype");
     
         // Evaluation Methodology
-        split_method        = CommonDatasetSplitters.METHOD.CommunityXFold_CV;
+        split_method        = CommonDatasetSplitters.METHOD.CommunityTimeOrderProportionHoldout;
         testProportion = 0.1;  // 0.085 for Ml100k // 0.054 for Ml1m
         testSize = 10;
         candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.USER_TEST;
@@ -131,7 +131,7 @@ public class Experiment extends Experiment_Main
         SEND_RESULT_FILES=false;
         EXPERIMENT_PREFIX = "";
         EXPERIMENT_DESCRIPTION = "";
-        RESULTS_PATH = "/datos/experiments/"; //"/datos/experiments/";
+        RESULTS_PATH = "F:/experiments/"; //"/datos/experiments/";
         level = Level.SEVERE;
     
         // execution statistics
