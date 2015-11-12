@@ -20,7 +20,7 @@ public class ContinuousTimeContextComputerBuilder {
         Holiday
     }
     
-    public static ContextualAttributeComputerIF getContextComputer(TimeContext timeContext) {
+    public static CategoricalContextComputerIF getContextComputer(TimeContext timeContext) {
         switch(timeContext){
             case PeriodOfDay:
                 return new PeriodOfDayAttributeComputer();

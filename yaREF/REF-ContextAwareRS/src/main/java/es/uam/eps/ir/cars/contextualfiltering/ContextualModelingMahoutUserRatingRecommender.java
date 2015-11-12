@@ -1,6 +1,6 @@
 package es.uam.eps.ir.cars.contextualfiltering;
 
-import es.uam.eps.ir.cars.inferred.ContextualAttributeComputerIF;
+import es.uam.eps.ir.cars.inferred.CategoricalContextComputerIF;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder;
 import es.uam.eps.ir.cars.recommender.AbstractRecommender;
 import es.uam.eps.ir.core.context.ContextIF;
@@ -117,11 +117,11 @@ public class ContextualModelingMahoutUserRatingRecommender <U,I,C extends Contex
         return cModel;
     }
     
-    private static ContextualAttributeComputerIF getContextComputer(ContinuousTimeContextComputerBuilder.TimeContext timeContext) {
+    private static CategoricalContextComputerIF getContextComputer(ContinuousTimeContextComputerBuilder.TimeContext timeContext) {
         return ContinuousTimeContextComputerBuilder.getContextComputer(timeContext);
     }
 
-    private Map<String, Collection<PreferenceIF<U, I, C>>> getContextSplits(Collection<? extends PreferenceIF<U, I, C>> preferences, ContextualAttributeComputerIF contextComputer) {
+    private Map<String, Collection<PreferenceIF<U, I, C>>> getContextSplits(Collection<? extends PreferenceIF<U, I, C>> preferences, CategoricalContextComputerIF contextComputer) {
         Map<String, Collection<PreferenceIF<U,I,C>>> contextSplits = new HashMap<String, Collection<PreferenceIF<U,I,C>>>();
         
         for (PreferenceIF<U,I,C> pref: preferences){

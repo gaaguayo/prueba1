@@ -6,7 +6,7 @@ import es.uam.eps.ir.core.context.ContinuousTimeContext;
  *
  * @author pedro
  */
-public class DateAttributeComputer<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements ContextualAttributeComputerIF<C>{
+public class DateAttributeComputer<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements CategoricalContextComputerIF<C>{
 
     public String getAttributeName() {
         return "Date";

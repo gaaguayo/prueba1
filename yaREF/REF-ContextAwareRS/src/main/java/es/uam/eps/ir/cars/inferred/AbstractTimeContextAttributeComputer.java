@@ -9,7 +9,7 @@ import weka.core.FastVector;
  *
  * @author pedro
  */
-public abstract class AbstractTimeContextAttributeComputer<C extends ContinuousTimeContext> implements ContextualAttributeComputerIF<C>{
+public abstract class AbstractTimeContextAttributeComputer<C extends ContinuousTimeContext> implements CategoricalContextComputerIF<C>{
     protected final Calendar cal = Calendar.getInstance();
     protected final Attribute attribute;
     

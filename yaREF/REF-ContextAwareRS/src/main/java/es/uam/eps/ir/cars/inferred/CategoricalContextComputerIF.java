@@ -6,7 +6,7 @@ import weka.core.Attribute;
  *
  * @author pedro
  */
-public interface ContextualAttributeComputerIF<C> {
+public interface CategoricalContextComputerIF<C> {
 //    String getAttributeName();
     String getAttributeType();
     double getAttributeValue(C context);

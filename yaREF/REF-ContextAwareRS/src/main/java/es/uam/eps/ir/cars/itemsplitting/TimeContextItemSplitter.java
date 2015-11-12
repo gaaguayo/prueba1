@@ -1,6 +1,6 @@
  package es.uam.eps.ir.cars.itemsplitting;
 
-import es.uam.eps.ir.cars.inferred.ContextualAttributeComputerIF;
+import es.uam.eps.ir.cars.inferred.CategoricalContextComputerIF;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder.TimeContext;
 import es.uam.eps.ir.cars.model.ImplicitDataIF;
@@ -52,7 +52,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
         this.minContextSize = minContextSize;
     }
     
-    public static ContextualAttributeComputerIF getContextComputer(TimeContext timeContext) {
+    public static CategoricalContextComputerIF getContextComputer(TimeContext timeContext) {
         return ContinuousTimeContextComputerBuilder.getContextComputer(timeContext);
     }
 
@@ -86,7 +86,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
                     break;                    
                 }
             }
-            ContextualAttributeComputerIF contextComputer = getContextComputer(timeContext);
+            CategoricalContextComputerIF contextComputer = getContextComputer(timeContext);
             String contextNominalValue = contextComputer.getAttributeNominalValue(context);
 
             String splitItemID;
@@ -211,7 +211,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
     }    
     
     
-    public Map<String, Collection<PreferenceIF<U, I, C>>> getContextSplits(Collection<? extends PreferenceIF<U, I, C>> preferences, ContextualAttributeComputerIF contextComputer) {
+    public Map<String, Collection<PreferenceIF<U, I, C>>> getContextSplits(Collection<? extends PreferenceIF<U, I, C>> preferences, CategoricalContextComputerIF contextComputer) {
         Map<String, Collection<PreferenceIF<U,I,C>>> contextSplits = new HashMap<String, Collection<PreferenceIF<U,I,C>>>();
         
         for (PreferenceIF<U,I,C> pref: preferences){

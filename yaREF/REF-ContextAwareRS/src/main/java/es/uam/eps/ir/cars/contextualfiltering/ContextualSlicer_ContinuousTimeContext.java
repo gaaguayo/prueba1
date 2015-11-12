@@ -1,6 +1,6 @@
 package es.uam.eps.ir.cars.contextualfiltering;
 
-import es.uam.eps.ir.cars.inferred.ContextualAttributeComputerIF;
+import es.uam.eps.ir.cars.inferred.CategoricalContextComputerIF;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder.TimeContext;
 import es.uam.eps.ir.core.context.ContextIF;
@@ -89,7 +89,7 @@ public class ContextualSlicer_ContinuousTimeContext<U,I,C extends ContextIF> ext
         
         String contextSegment = null;
         for (TimeContext tCtx : contexts){
-            ContextualAttributeComputerIF computer = ContinuousTimeContextComputerBuilder.getContextComputer(tCtx);
+            CategoricalContextComputerIF computer = ContinuousTimeContextComputerBuilder.getContextComputer(tCtx);
             if (contextSegment == null){
                 contextSegment = computer.getAttributeNominalValue(context);
             }            
@@ -108,12 +108,12 @@ public class ContextualSlicer_ContinuousTimeContext<U,I,C extends ContextIF> ext
         }
         List<String> theList = new ArrayList<String>();
         if (i == 0){
-            ContextualAttributeComputerIF computer = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(i));
+            CategoricalContextComputerIF computer = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(i));
             theList.addAll(Arrays.asList(computer.getAttributeType().split(",")));
         }
         else{
             List<String> oldList = getCombination(i-1);
-            ContextualAttributeComputerIF computer = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(i));
+            CategoricalContextComputerIF computer = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(i));
             for (String prefix : oldList){
                 for (String ctx : Arrays.asList(computer.getAttributeType().split(","))){
                     theList.add(prefix + "_" + ctx);

@@ -7,7 +7,7 @@ import es.uam.eps.ir.dataset.CommonDatasets;
 import es.uam.eps.ir.dataset.DatasetIF;
 import es.uam.eps.ir.split.ratingorder.ROTime;
 import es.uam.eps.ir.split.ratingorder.RatingOrderIF;
-import es.uam.eps.ir.cars.inferred.ContextualAttributeComputerIF;
+import es.uam.eps.ir.cars.inferred.CategoricalContextComputerIF;
 import es.uam.eps.ir.cars.inferred.PeriodOfWeekAttributeComputer;
 import java.util.List;
 import java.util.Random;
@@ -22,7 +22,7 @@ import modelUtils.ModelPrintUtils;
  * @author pedro
  */
 public class ContextDatasetGenerator<U,I,C extends ContextIF> {
-    private ContextualAttributeComputerIF contextComputer;
+    private CategoricalContextComputerIF contextComputer;
     private float maxRatingValue = (float)5.0;
     private float minRatingValue = (float)1.0;
     private final static Logger logger = Logger.getLogger("ExperimentLog");

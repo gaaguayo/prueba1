@@ -5,7 +5,6 @@ import es.uam.eps.ir.dataset.CommonDatasets;
 import es.uam.eps.ir.nonpersonalized.NonPersonalizedPrediction;
 import es.uam.eps.ir.rank.CandidateItemsBuilder;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.logging.Level;
 /**
  *
@@ -21,7 +20,7 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.MovieLens100k;
+        dataset_name = CommonDatasets.DATASET.MovieLens1m;
         // Dataset_ItemSplit
         item_split = false;
         minContextSizeForSplitting = 5;
@@ -32,32 +31,32 @@ public class Experiment extends Experiment_Main
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype");
 //        filtering_contexts = Arrays.asList("cuadrante");
-//        filtering_contexts = Arrays.asList("PeriodOfDay");
+        filtering_contexts = Arrays.asList("PeriodOfWeek");
     
         // Evaluation Methodology
-        split_method        = CommonDatasetSplitters.METHOD.CommunityRandomOrderProportionHoldout;
-        testProportion = 0.1;  // 0.085 for Ml100k // 0.054 for Ml1m
+        split_method        = CommonDatasetSplitters.METHOD.UserTimeOrderProportionHoldout;
+        testProportion = 0.2;  // 0.085 for Ml100k // 0.054 for Ml1m
         testSize = 10;
-        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.USER_TEST;
-        relevance_threshold=(float) 4.0;
+        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.COMMUNITY_TEST;
+        relevance_threshold=(float) 1.0;
         nForOnePlusRandom = 10;
         
-        non_personalized = NonPersonalizedPrediction.Type.OverallMean;
+        non_personalized = NonPersonalizedPrediction.Type.ItemUserOverallMean;
         controlPredictionValue = true;
         genTrainingAndTestFiles = false;
     
         // Evaluation Metrics
-        rankingMetrics = CommonRankingMetrics.METRICS.BASIC;
-        errorMetrics = CommonErrorMetrics.METRICS.ALL;
+        rankingMetrics = CommonRankingMetrics.METRICS.COMMON;
+        errorMetrics = CommonErrorMetrics.METRICS.NONE;
         levels = Arrays.asList(5,10,20,50);
     
 //      // Recommendation method
-//        recommender_method  = CommonRecommenders.METHOD.ContextualPRF_UserBased;
+        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_POF_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_FPOF_UserBased;
-//        recommender_method  = CommonRecommenders.METHOD.ContextualPRF_UserBased_Categorical;
-//        recommender_method  = CommonRecommenders.METHOD.ContextualPOF_UserBased_Categorical;
-//        recommender_method  = CommonRecommenders.METHOD.ContextualPRF_MahoutUserBased;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_UserBased_Categorical;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_POF_UserBased_Categorical;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualPOF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualFPOF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
@@ -92,11 +91,11 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
-        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     
     
-        neighbors = 30;
+        neighbors = 200;
         minCommonRatingsForPrediction = 3;
         halfLifeProportion = 0.0;
         halfLifeDays = 200;

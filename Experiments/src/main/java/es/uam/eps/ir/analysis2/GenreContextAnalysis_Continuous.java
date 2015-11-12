@@ -8,7 +8,7 @@ import es.uam.eps.ir.dataset.DatasetIF;
 import es.uam.eps.ir.dataset.MultiValuedAttribute;
 import es.uam.eps.ir.dataset.CommonDatasets;
 import es.uam.eps.ir.dataset.Context_IRG.Context_Movies_IRG_Attributes;
-import es.uam.eps.ir.cars.inferred.ContextualAttributeComputerIF;
+import es.uam.eps.ir.cars.inferred.CategoricalContextComputerIF;
 import es.uam.eps.ir.cars.inferred.PeriodOfDayAttributeComputer4;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,7 +33,7 @@ public class GenreContextAnalysis_Continuous {
         for (String genre : Context_Movies_IRG_Attributes.GENRES){
 
             System.out.print(genre + "\t");
-            ContextualAttributeComputerIF computer;
+            CategoricalContextComputerIF computer;
             computer = new PeriodOfDayAttributeComputer4();
             for (String contextValue : Arrays.asList("Morning","Afternoon","Night")){
 //            for (String contextValue : Arrays.asList("Morning","Noon","Evening","Night")){
@@ -64,7 +64,7 @@ public class GenreContextAnalysis_Continuous {
         }
     }
 
-    public static float getItemGenreAvgRating(String genre, ContextualAttributeComputerIF computer, String contextValue){
+    public static float getItemGenreAvgRating(String genre, CategoricalContextComputerIF computer, String contextValue){
         float avg = 0;
         int count = 0;
 
@@ -91,7 +91,7 @@ public class GenreContextAnalysis_Continuous {
         return avg;
     }
     
-    public static float getItemAvgRating(ContextualAttributeComputerIF computer, String contextValue){
+    public static float getItemAvgRating(CategoricalContextComputerIF computer, String contextValue){
         float avg = 0;
         int count = 0;
 

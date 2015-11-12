@@ -7,7 +7,7 @@ import java.util.Calendar;
  *
  * @author pedro
  */
-public class ChristmasAttributeComputer<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements ContextualAttributeComputerIF<C>{
+public class ChristmasAttributeComputer<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements CategoricalContextComputerIF<C>{
 
     public String getAttributeName() {
         return "Christmas";

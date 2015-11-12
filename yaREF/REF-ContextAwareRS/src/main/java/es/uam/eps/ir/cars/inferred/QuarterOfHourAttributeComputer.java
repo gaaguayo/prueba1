@@ -7,7 +7,7 @@ import java.util.Calendar;
  *
  * @author pedro
  */
-public class QuarterOfHourAttributeComputer<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements ContextualAttributeComputerIF<C>{
+public class QuarterOfHourAttributeComputer<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements CategoricalContextComputerIF<C>{
 
     public String getAttributeName() {
         return "QuarterOfHour";

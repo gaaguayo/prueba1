@@ -5,7 +5,7 @@ import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
 import es.uam.eps.ir.core.rec.RecommenderIF;
-import es.uam.eps.ir.cars.inferred.ContextualAttributeComputerIF;
+import es.uam.eps.ir.cars.inferred.CategoricalContextComputerIF;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder.TimeContext;
 import es.uam.eps.ir.cars.itemsplitting.TimeContextItemSplitter;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class HybridOfflineRecommender<U,I,C extends ContextIF> implements Recomm
             Float prediction = basicRecommender.predict(user, item, context);
             if (Float.isNaN(prediction)){
                 for (TimeContext timeContext: TimeContext.values()){
-                    ContextualAttributeComputerIF attComp = TimeContextItemSplitter.getContextComputer(timeContext);
+                    CategoricalContextComputerIF attComp = TimeContextItemSplitter.getContextComputer(timeContext);
                     PreferenceIF<U,I,C> pref = (PreferenceIF<U,I,C>)testData.getPreferences(user, item).toArray()[0];
                     String ctx =  "_" + attComp.getAttributeNominalValue(pref.getContext());
                     prediction = basicRecommender.predict(user, (I)(item + "_" + timeContext.toString() + ctx), context);

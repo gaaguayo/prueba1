@@ -7,7 +7,7 @@ import java.util.Calendar;
  *
  * @author pedro
  */
-public class DayOfWeekAttributeComputer<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements ContextualAttributeComputerIF<C>{
+public class DayOfWeekAttributeComputer<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements CategoricalContextComputerIF<C>{
 
     public String getAttributeName() {
         return "DayOfWeek";
