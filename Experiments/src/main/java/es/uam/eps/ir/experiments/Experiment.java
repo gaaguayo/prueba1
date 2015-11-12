@@ -21,7 +21,7 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
+        dataset_name = CommonDatasets.DATASET.MovieLens100k;
         // Dataset_ItemSplit
         item_split = false;
         minContextSizeForSplitting = 5;
@@ -31,7 +31,8 @@ public class Experiment extends Experiment_Main
         is_contexts = Arrays.asList("cuadrante");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype");
-        filtering_contexts = Arrays.asList("cuadrante");
+//        filtering_contexts = Arrays.asList("cuadrante");
+//        filtering_contexts = Arrays.asList("PeriodOfDay");
     
         // Evaluation Methodology
         split_method        = CommonDatasetSplitters.METHOD.CommunityRandomOrderProportionHoldout;
@@ -59,7 +60,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.ContextualPRF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualPOF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualFPOF_MahoutUserBased;
-        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_POF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased_Categorical;
@@ -91,7 +92,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
-//        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
+        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     
     

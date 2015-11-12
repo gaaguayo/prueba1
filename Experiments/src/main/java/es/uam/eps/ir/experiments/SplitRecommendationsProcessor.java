@@ -107,13 +107,15 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
         experimentInfo.append(splitInfo);
         System.out.print(splitInfo);
         checkMem();
-        
-        try {
-            defaultContext = (C)new ContinuousTimeContext(eTest.getMinDate().getTime());
-//        defaultContext = (C)new ContinuousTimeContext(eTest.getMaxDate().getTime());
-        } catch (Exception e){
-            defaultContext = eTest.getExampleContext();
-        }
+
+//        Commented 2015-11-12, due to introduction of TimestampedContextContainer
+//        try {
+//            defaultContext = (C)new ContinuousTimeContext(eTest.getMinDate().getTime());
+////        defaultContext = (C)new ContinuousTimeContext(eTest.getMaxDate().getTime());
+//        } catch (Exception e){
+//            defaultContext = eTest.getExampleContext();
+//        }
+        defaultContext = eTest.getExampleContext();
             
         // Relevants & Non-Relevants
         ////////////////////////////
