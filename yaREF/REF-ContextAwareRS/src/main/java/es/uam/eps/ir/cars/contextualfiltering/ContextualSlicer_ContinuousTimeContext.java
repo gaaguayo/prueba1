@@ -38,40 +38,8 @@ public class ContextualSlicer_ContinuousTimeContext<U,I,C extends ContextIF> ext
     }
         
     public List<ContextualSegmentIF> getSegments(){
-//        List<String> _segments=new ArrayList<String>();
-//        
-//        if (contexts.size() == 1){
-//            ContextualAttributeComputerIF computer = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(0));
-//            _segments.addAll(Arrays.asList(computer.getAttributeType().split(",")));
-//        }
-//        else if (contexts.size() == 2){
-//            ContextualAttributeComputerIF computer0 = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(0));
-//            ContextualAttributeComputerIF computer1 = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(1));
-//            for (String ctx0 : Arrays.asList(computer0.getAttributeType().split(","))){
-//                for (String ctx1 : Arrays.asList(computer1.getAttributeType().split(","))){
-//                    _segments.add(ctx0 + "_" + ctx1);
-//                }            
-//            }
-//        }
-//        else if (contexts.size() == 3){
-//            ContextualAttributeComputerIF computer0 = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(0));
-//            ContextualAttributeComputerIF computer1 = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(1));
-//            ContextualAttributeComputerIF computer2 = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(2));
-//            for (String ctx0 : Arrays.asList(computer0.getAttributeType().split(","))){
-//                for (String ctx1 : Arrays.asList(computer1.getAttributeType().split(","))){
-//                    for (String ctx2 : Arrays.asList(computer2.getAttributeType().split(","))){
-//                        _segments.add(ctx0 + "_" + ctx1 + "_" + ctx2);
-//                    }
-//                }            
-//            }
-//        }
         
         List<String> _segments = this.getCombination(contexts.size()-1);
-//        ContextualAttributeComputerIF[] computer = new ContextualAttributeComputerIF[contexts.size()];
-//        for (int i = 0; i < contexts.size(); i++){
-//            computer[i] = ContinuousTimeContextComputerBuilder.getContextComputer(contexts.get(i));
-//            
-//        }
 
         List<ContextualSegmentIF> segments=new ArrayList<ContextualSegmentIF>();
         for(String s: _segments){

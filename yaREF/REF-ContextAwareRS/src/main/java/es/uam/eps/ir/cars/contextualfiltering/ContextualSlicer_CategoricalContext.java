@@ -7,12 +7,10 @@ import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * This class creates Contextual segments (slices) from a {@link ModelIF}
- * based on the Weekday or Weekend time property.
  *
  * @author Pedro G. Campos <pcampossoto@gmail.com>
  * Creation date: 19-feb-2012
@@ -21,8 +19,6 @@ public class ContextualSlicer_CategoricalContext<U,I,C extends ContextIF> extend
     protected List<ContextDefinition> ctxDefs;
     
     public ContextualSlicer_CategoricalContext(List<ContextDefinition> ctxDefs) {
-//        this.contextName = ctxDef.getName();
-//        this.segmentNames = (String[])ctxDef.getNominalValues().toArray();
         this.ctxDefs = ctxDefs;
     }
 
@@ -37,27 +33,7 @@ public class ContextualSlicer_CategoricalContext<U,I,C extends ContextIF> extend
     }
     
     public List<ContextualSegmentIF> getSegments(){
-        List<String> _segments=new ArrayList<String>();
-        
-        if (ctxDefs.size() == 1){
-            _segments.addAll(ctxDefs.get(0).getNominalValues());
-        }
-        else if (ctxDefs.size() == 2){
-            for (String ctx1 : ctxDefs.get(0).getNominalValues()){
-                for (String ctx2 : ctxDefs.get(1).getNominalValues()){
-                    _segments.add(ctx1 + "_" + ctx2);
-                }            
-            }
-        }
-        else if (ctxDefs.size() == 3){
-            for (String ctx1 : ctxDefs.get(0).getNominalValues()){
-                for (String ctx2 : ctxDefs.get(1).getNominalValues()){
-                    for (String ctx3 : ctxDefs.get(2).getNominalValues()){
-                        _segments.add(ctx1 + "_" + ctx2 + "_" + ctx3);
-                    }
-                }            
-            }
-        }
+        List<String> _segments = this.getCombination(ctxDefs.size()-1);
 
         List<ContextualSegmentIF> segments=new ArrayList<ContextualSegmentIF>();
         for(String s: _segments){
@@ -90,5 +66,24 @@ public class ContextualSlicer_CategoricalContext<U,I,C extends ContextIF> extend
         segment = new StringContextualSegment(contextSegment);
         return segment;
     }
-    
+
+    List<String> getCombination(int i){
+        if (i < 0){
+            return null;
+        }
+        List<String> theList = new ArrayList<String>();
+        if (i == 0){
+            theList.addAll(ctxDefs.get(i).getNominalValues());
+        }
+        else{
+            List<String> oldList = getCombination(i-1);            
+            for (String prefix : oldList){
+                for (String ctx : ctxDefs.get(i).getNominalValues()){
+                    theList.add(prefix + "_" + ctx);
+                }
+            }
+        }        
+        return theList;
+    }
+
 }
