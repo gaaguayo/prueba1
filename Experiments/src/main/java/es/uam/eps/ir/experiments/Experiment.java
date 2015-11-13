@@ -20,7 +20,7 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.MovieLens1m;
+        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
         // Dataset_ItemSplit
         item_split = false;
         minContextSizeForSplitting = 5;
@@ -31,7 +31,7 @@ public class Experiment extends Experiment_Main
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype");
 //        filtering_contexts = Arrays.asList("cuadrante");
-        filtering_contexts = Arrays.asList("PeriodOfWeek");
+        filtering_contexts = Arrays.asList("PeriodOfWeek","PeriodOfDay");
     
         // Evaluation Methodology
         split_method        = CommonDatasetSplitters.METHOD.UserTimeOrderProportionHoldout;
@@ -46,12 +46,12 @@ public class Experiment extends Experiment_Main
         genTrainingAndTestFiles = false;
     
         // Evaluation Metrics
-        rankingMetrics = CommonRankingMetrics.METRICS.COMMON;
-        errorMetrics = CommonErrorMetrics.METRICS.NONE;
+        rankingMetrics = CommonRankingMetrics.METRICS.BASIC;
+        errorMetrics = CommonErrorMetrics.METRICS.ALL;
         levels = Arrays.asList(5,10,20,50);
     
 //      // Recommendation method
-        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_UserBased;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_POF_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_FPOF_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_UserBased_Categorical;
@@ -59,7 +59,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualPOF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualFPOF_MahoutUserBased;
-//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
+        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_POF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased_Categorical;
@@ -88,6 +88,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.Random;
 //        recommender_method  = CommonRecommenders.METHOD.TimeContextItemSplitting_KNN;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Default;
+//        recommender_method  = CommonRecommenders.METHOD.MF_Default;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
@@ -95,14 +96,14 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     
     
-        neighbors = 200;
+        neighbors = 30;
         minCommonRatingsForPrediction = 3;
         halfLifeProportion = 0.0;
         halfLifeDays = 200;
     
         // Only for optimization of Model-based recommenders
         factors = 60;    
-        iterations = 30;
+        iterations = 60;
         learnRate = 0.005;
         lambda = 0.02;
 
@@ -133,7 +134,7 @@ public class Experiment extends Experiment_Main
         EXPERIMENT_PREFIX = "";
         EXPERIMENT_DESCRIPTION = "";
         RESULTS_PATH = "F:/experiments/"; //"/datos/experiments/";
-        level = Level.SEVERE;
+        level = Level.INFO;
     
         // execution statistics
         maxMem=0;

@@ -1,7 +1,9 @@
 package es.uam.eps.ir.experiments;
 
 import es.uam.eps.ir.cars.bias.ModelBasedRecommender;
+import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder.TimeContext;
+import es.uam.eps.ir.cars.inferred.TimeContextDefinition;
 import es.uam.eps.ir.cars.itemsplitting.CategoricalContextItemSplitter;
 import es.uam.eps.ir.cars.itemsplitting.ChiSquaredImpurity;
 import es.uam.eps.ir.cars.itemsplitting.ContextBasedItemSplitterIF;
@@ -316,6 +318,13 @@ public class Experiment_Main
                         for (ContextDefinition ctxDef : allCategoricalContextDefinitions){
                             if (ctxDef.getName().equalsIgnoreCase(context)){
                                 selectedCategoricalContextDefinitions.add(ctxDef);
+                                logger.info("Filtering by " + context + " categorical context");
+                            }
+                        }
+                        for (TimeContext tc : TimeContext.values()){
+                            if (tc.name().equalsIgnoreCase(context)){
+                                selectedCategoricalContextDefinitions.add(new TimeContextDefinition(context));                                
+                                logger.info("Filtering by " + context + " time context");
                             }
                         }
                     }
