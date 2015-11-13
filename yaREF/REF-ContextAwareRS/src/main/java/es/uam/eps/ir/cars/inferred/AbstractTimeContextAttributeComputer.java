@@ -13,7 +13,7 @@ public abstract class AbstractTimeContextAttributeComputer<C extends ContinuousT
     protected final Calendar cal = Calendar.getInstance();
     protected final Attribute attribute;
     
-    protected abstract String getAttributeName();
+    public abstract String getAttributeName();
 //    protected abstract String getAttributeType();
     
 
