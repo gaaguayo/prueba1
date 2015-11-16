@@ -1,10 +1,13 @@
 package es.uam.eps.ir.dataset.MovieLens1m;
 
 import es.uam.eps.ir.cars.model.ContinuousTimeModelReader;
+import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.dataset.AbstractDataset;
 import es.uam.eps.ir.dataset.DatasetIF;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -47,4 +50,9 @@ public class Movielens1m_60UsersDataset<U,I,C extends ContinuousTimeContextIF> e
     public final String name(){
         return "MovieLens1m_60users";
     }    
+
+//    @Override
+//    public List<ContextDefinition> getContextDefinitions() {
+//        return new ArrayList();
+//    }
 }

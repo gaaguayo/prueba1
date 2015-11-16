@@ -329,16 +329,16 @@ public class Experiment_Main
                         }
                     }
                 }
-                else{
-                    selectedContinuousTimeContextDefinitions = new ArrayList<TimeContext>();
-                    for (String context : filtering_contexts){
-                        for (TimeContext tc : TimeContext.values()){
-                            if (tc.name().equalsIgnoreCase(context)){
-                                selectedContinuousTimeContextDefinitions.add(tc);
-                            }
-                        }
-                    }
-                }
+//                else{
+//                    selectedContinuousTimeContextDefinitions = new ArrayList<TimeContext>();
+//                    for (String context : filtering_contexts){
+//                        for (TimeContext tc : TimeContext.values()){
+//                            if (tc.name().equalsIgnoreCase(context)){
+//                                selectedContinuousTimeContextDefinitions.add(tc);
+//                            }
+//                        }
+//                    }
+//                }
             }                        
             EXPERIMENT_DESCRIPTION = datasetString  + "/" + datasetDetailsString + "__"  + recommenderString + "__" + splitter + candidates + "_" + relevance_threshold + "__";
 

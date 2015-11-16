@@ -1,14 +1,17 @@
 package es.uam.eps.ir.dataset;
 
 import es.uam.eps.ir.cars.model.ContinuousTimeModelReader;
+import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author pedro
  */
-public class Movielens100kDataset<U,I,C extends ContinuousTimeContextIF> extends AbstractDataset<U,I,C> implements DatasetIF<U,I,C>{
+public class Movielens100kDataset<U,I,C extends ContinuousTimeContextIF> extends AbstractDataset<U,I,C> implements ContextualDatasetIF<U,I,C>{
 
     public Movielens100kDataset(String path, String file) {
         super(path, file);
@@ -45,4 +48,9 @@ public class Movielens100kDataset<U,I,C extends ContinuousTimeContextIF> extends
     public final String name(){
         return "MovieLens100k";
     }    
+
+    @Override
+    public List<ContextDefinition> getContextDefinitions() {
+        return new ArrayList();
+    }
 }

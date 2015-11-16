@@ -47,7 +47,7 @@ public class FoursquareQuadrantsCategoricalDataset<U,I,C extends ContextIF> exte
         for (int i = firstID; i <= lastID; i++){
             IDs.add(Integer.toString(i));
         }
-//        theReader.addContext("cuadrante", 2, IDs);
+        theReader.addContext("quadrant", 2, IDs);
         theReader.setContainsTitleLine(false);
         theReader.setImplicitData();
 //        theReader.setIntegerKeys();
