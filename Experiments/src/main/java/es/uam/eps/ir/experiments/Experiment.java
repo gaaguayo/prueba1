@@ -1,6 +1,6 @@
 package es.uam.eps.ir.experiments;
 
-import es.uam.eps.ir.cars.itemsplitting.FisherExactImpurity;
+import es.uam.eps.ir.cars.itemsplitting.MeanImpurity;
 import es.uam.eps.ir.dataset.CommonDatasets;
 import es.uam.eps.ir.nonpersonalized.NonPersonalizedPrediction;
 import es.uam.eps.ir.rank.CandidateItemsBuilder;
@@ -20,15 +20,16 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.Context_Movies_IRG;
+        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
         // Dataset_ItemSplit
         item_split = true;
         minContextSizeForSplitting = 5;
-//        is_impurity = new MeanImpurity(1.7); // kNN min3, Mean1.7, IG0.6 Popr1.0
-        is_impurity = new FisherExactImpurity(0.4); // MF-30-10 min3, Mean1.7
+        is_impurity = new MeanImpurity(1.7); // kNN min3, Mean1.7, IG0.6 Popr1.0
+//        is_impurity = new InformationGainImpurity(0.1); //
+//        is_impurity = new FisherExactImpurity(0.4); // MF-30-10 min3, Mean1.7
 //        is_contexts = Arrays.asList(TimeContextItemSplitter.TimeContext.PeriodOfDay1.name());
 //        is_contexts = Arrays.asList("PeriodOfWeek");
-        is_contexts = Arrays.asList("Week");
+        is_contexts = Arrays.asList("quadrant");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype","weekend");
 //        filtering_contexts = Arrays.asList("quadrant");
@@ -135,7 +136,7 @@ public class Experiment extends Experiment_Main
         EXPERIMENT_PREFIX = "";
         EXPERIMENT_DESCRIPTION = "";
         RESULTS_PATH = "F:/experiments/"; //"/datos/experiments/";
-        level = Level.SEVERE;
+        level = Level.INFO;
     
         // execution statistics
         maxMem=0;

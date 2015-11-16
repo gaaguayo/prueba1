@@ -5,7 +5,7 @@ import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.dataset.AbstractDataset;
-import es.uam.eps.ir.dataset.DatasetIF;
+import es.uam.eps.ir.dataset.ContextualDatasetIF;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author pedro
  */
-public class Movielens1m_60UsersDataset<U,I,C extends ContinuousTimeContextIF> extends AbstractDataset<U,I,C> implements DatasetIF<U,I,C>{
+public class Movielens1m_60UsersDataset<U,I,C extends ContinuousTimeContextIF> extends AbstractDataset<U,I,C> implements ContextualDatasetIF<U,I,C>{
 
     public Movielens1m_60UsersDataset(String path, String file) {
         super(path, file);
@@ -51,8 +51,8 @@ public class Movielens1m_60UsersDataset<U,I,C extends ContinuousTimeContextIF> e
         return "MovieLens1m_60users";
     }    
 
-//    @Override
-//    public List<ContextDefinition> getContextDefinitions() {
-//        return new ArrayList();
-//    }
+    @Override
+    public List<ContextDefinition> getContextDefinitions() {
+        return new ArrayList();
+    }
 }

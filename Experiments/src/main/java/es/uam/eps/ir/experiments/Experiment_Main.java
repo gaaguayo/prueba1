@@ -544,6 +544,7 @@ public class Experiment_Main
     
     protected static SplitIF getItemSplittingSplit(SplitIF originalSplit, DatasetIF dataset,  ImpurityComputerIF impurityComputer, int minContextSize, List<String> contexts){
         ContextBasedItemSplitterIF itemSplitter;
+        SplitIF<Object, Object, ContextIF> newSplit = null;
         
         if (dataset instanceof ContextualDatasetIF){
             List<ContextDefinition> allContextDefinitions = ((ContextualDatasetIF)dataset).getContextDefinitions();
@@ -552,27 +553,38 @@ public class Experiment_Main
                 for (ContextDefinition ctxDef : allContextDefinitions){
                     if (ctxDef.getName().equalsIgnoreCase(context)){
                         selectedContextDefinitions.add(ctxDef);
+                        logger.info("Item splitting by " + context + " categorical context");
+                    }
+                }                
+                for (TimeContext tc : TimeContext.values()){
+                    if (tc.name().equalsIgnoreCase(context)){
+                        selectedContextDefinitions.add(new TimeContextDefinition(context));
+                        logger.info("Item splitting by " + context + " time context");
                     }
                 }
-                
-            }
+            }            
             itemSplitter = new CategoricalContextItemSplitter(impurityComputer, selectedContextDefinitions);
+            itemSplitter.setMinContextSize(minContextSize);
+            ItemSplittingExplicitModel trainingModel = new ItemSplittingExplicitModel(itemSplitter, originalSplit.getTrainingSet());
+            newSplit = new Split(trainingModel, originalSplit.getTestingSet());
+
         }
-        else{
-            List<TimeContext> the_contexts = new ArrayList<TimeContext>();
-                for (String context : contexts){
-                    for (TimeContext tc : TimeContext.values()){
-                        if (tc.name().equalsIgnoreCase(context)){
-                            the_contexts.add(tc);
-                        }
-                    }
-                }
-            
-            itemSplitter = new TimeContextItemSplitter(impurityComputer, the_contexts);            
-        }
-        itemSplitter.setMinContextSize(minContextSize);
-        ItemSplittingExplicitModel trainingModel = new ItemSplittingExplicitModel(itemSplitter, originalSplit.getTrainingSet());
-        SplitIF<Object, Object, ContextIF> newSplit = new Split(trainingModel, originalSplit.getTestingSet());
+//        else{
+//            List<TimeContext> the_contexts = new ArrayList<TimeContext>();
+//                for (String context : contexts){
+//                    for (TimeContext tc : TimeContext.values()){
+//                        if (tc.name().equalsIgnoreCase(context)){
+//                            the_contexts.add(tc);
+//                        }
+//                    }
+//                }
+//            
+//            itemSplitter = new TimeContextItemSplitter(impurityComputer, the_contexts);            
+//        }
+
+//            itemSplitter.setMinContextSize(minContextSize);
+//            ItemSplittingExplicitModel trainingModel = new ItemSplittingExplicitModel(itemSplitter, originalSplit.getTrainingSet());
+//            newSplit = new Split(trainingModel, originalSplit.getTestingSet());
         
         return newSplit;
     }
