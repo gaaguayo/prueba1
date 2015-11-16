@@ -23,7 +23,6 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
     protected Map<U,Integer> userIndexMap;    // Maps userKey to userIndex (1..userSize)
     protected Map<I,Integer> itemIndexMap;    // Maps itemKey to itemIndex (1..itemSize)
     protected int ratingCount=0;        // general ratings counter
-    protected int aggregatedRatingCount=0;        // general ratings counter
     protected float meanRating;    // overall mean rating
     protected float minRating;     // min. rating in the data
     protected float maxRating;     // max. rating in the data
@@ -35,10 +34,25 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
     protected int[] itemRatingsCount;  // per item ratings count
     protected int[] userAggregatedRatingsCount;  // per user aggregated ratings count
     protected int[] itemAggregatedRatingsCount;  // per item aggregated ratings count
+    // Frequencies
+    protected int frequencyCount=0;        // general ratings counter
+    protected float meanFrequency;    // overall mean frequency (of usage/rating)
+    protected float minFrequency;     // min. rating in the data
+    protected float maxFrequency;     // max. rating in the data
+    protected float[] userMinFrequency;  // per user min rating
+    protected float[] userMaxFrequency;  // per item max rating
+    protected float[] userMeanFrequency;  // per user mean rating
+    protected float[] itemMeanFrequency;  // per item mean rating
+    protected int[] userFrequencyCount;  // per user ratings count
+    protected int[] itemFrequencyCount;  // per item ratings count
+    protected int[] userAggregatedFrequencyCount;  // per user aggregated ratings count
+    protected int[] itemAggregatedFrequencyCount;  // per item aggregated ratings count
+    // Dates
     protected Date minDate; // minimum rating date
     protected Date maxDate; // maximum rating date
     protected Date[] userMinDate; // per user minimum rating date
     protected Date[] userMaxDate; // per user maximum rating date
+    // Control
     protected boolean indexesComputed=false;  // have means been computed?
     protected boolean meansComputed=false;  // have means been computed?
     protected boolean firstGlobalItem=false;  // have the first item been processed?
@@ -216,7 +230,7 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
 
 
     public int getAggregatedRatingCount() { // unique (user, item) pairs
-        return aggregatedRatingCount;
+        return frequencyCount;
     }
     
     public int getUserRatingCount(U user){
@@ -283,6 +297,7 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
         if (!indexesComputed) {
             this.computeIndexes();
         }
+        // Rating
         userMeanRating=new float[userIndexMap.size()];
         itemMeanRating=new float[itemIndexMap.size()];
         userMinRating=new float[userIndexMap.size()];
@@ -291,6 +306,16 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
         itemRatingsCount=new int[itemIndexMap.size()];
         userAggregatedRatingsCount=new int[userIndexMap.size()];
         itemAggregatedRatingsCount=new int[itemIndexMap.size()];
+        // Frequencies
+        userMeanFrequency=new float[userIndexMap.size()];
+        itemMeanFrequency=new float[itemIndexMap.size()];
+        userMinFrequency=new float[userIndexMap.size()];
+        userMaxFrequency=new float[userIndexMap.size()];
+        userFrequencyCount=new int[userIndexMap.size()];
+        itemFrequencyCount=new int[itemIndexMap.size()];
+        userAggregatedFrequencyCount=new int[userIndexMap.size()];
+        itemAggregatedFrequencyCount=new int[itemIndexMap.size()];
+        // Dates
         userMinDate=new Date[userIndexMap.size()];
         userMaxDate=new Date[userIndexMap.size()];       
         
@@ -306,7 +331,7 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
                 float theRating = aggregatedPreference.getValue();
                 processAggregatedRatingValue(userIndex,itemIndex,theRating);
                 userAggregatedRatingCount++;
-                aggregatedRatingCount++;
+                frequencyCount++;
                         
                 for (PreferenceIF<U,I,C> pref:prefs){
                     processPreference(userIndex, itemIndex, pref);
@@ -321,7 +346,7 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
             itemMeanRating[itemIndex]/=(double)itemAggregatedRatingsCount[itemIndex];
             
         }
-        meanRating/=(double)aggregatedRatingCount;
+        meanRating/=(double)frequencyCount;
         meansComputed=true;
         return true;
     }
