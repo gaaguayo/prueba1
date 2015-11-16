@@ -1,7 +1,7 @@
 package es.uam.eps.ir.experiments;
 
 import es.uam.eps.ir.cars.contextualfiltering.ContextDependentIF;
-import es.uam.eps.ir.cars.model.ImplicitDataIF;
+import es.uam.eps.ir.cars.model.ImplicitFeedbackIF;
 import es.uam.eps.ir.cars.model.ItemSplittingExplicitModel;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.context.ContinuousTimeContext;
@@ -315,7 +315,7 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
 //            List<RecommendationIF<I>> userRecommendations = new ArrayList<RecommendationIF<I>>();
             
             List<List<RecommendationIF<I>>> userRecommendationLists = new ArrayList<List<RecommendationIF<I>>>();
-            if (! (testSet instanceof ImplicitDataIF) ){
+            if (! (testSet instanceof ImplicitFeedbackIF) ){
                 List<RecommendationIF<I>> userTestRecommendations = this.getPredictions(recommender, user, nonPersonalized, trainingSet, testSet, controlPredictionValue);
                 userRecommendationLists.add(userTestRecommendations); // Always first
             }
@@ -504,7 +504,7 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
                 final ModelIF<U,I,C> testSet,
                 final boolean controlPredictionValue){
             
-            if (testSet instanceof ImplicitDataIF){
+            if (testSet instanceof ImplicitFeedbackIF){
                 throw new UnsupportedOperationException("Cannot compute predictions for implicit ratings");
             }
             

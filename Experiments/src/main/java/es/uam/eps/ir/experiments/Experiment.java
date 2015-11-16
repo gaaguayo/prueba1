@@ -20,9 +20,9 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
+        dataset_name = CommonDatasets.DATASET.Context_Adomavicius;
         // Dataset_ItemSplit
-        item_split = true;
+        item_split = false;
         minContextSizeForSplitting = 5;
         is_impurity = new MeanImpurity(1.7); // kNN min3, Mean1.7, IG0.6 Popr1.0
 //        is_impurity = new InformationGainImpurity(0.1); //
@@ -87,14 +87,14 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.TimeDecay_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ItemPopularity;
 //        recommender_method  = CommonRecommenders.METHOD.ItemAvg;
-//        recommender_method  = CommonRecommenders.METHOD.Random;
+        recommender_method  = CommonRecommenders.METHOD.Random;
 //        recommender_method  = CommonRecommenders.METHOD.TimeContextItemSplitting_KNN;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Default;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Default;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
-        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     
     
