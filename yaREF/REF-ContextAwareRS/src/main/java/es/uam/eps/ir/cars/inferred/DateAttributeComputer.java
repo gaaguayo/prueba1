@@ -1,12 +1,12 @@
 package es.uam.eps.ir.cars.inferred;
 
-import es.uam.eps.ir.core.context.ContinuousTimeContext;
+import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 
 /**
  *
  * @author pedro
  */
-public class DateAttributeComputer<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements CategoricalContextComputerIF<C>{
+public class DateAttributeComputer<C extends ContinuousTimeContextIF> extends AbstractTimeContextAttributeComputer<C> implements CategoricalContextComputerIF<C>{
 
     public String getAttributeName() {
         return "Date";

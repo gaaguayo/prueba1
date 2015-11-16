@@ -1,6 +1,6 @@
 package es.uam.eps.ir.cars.inferred;
 
-import es.uam.eps.ir.core.context.ContinuousTimeContext;
+import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 import java.util.Calendar;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -9,7 +9,7 @@ import weka.core.FastVector;
  *
  * @author pedro
  */
-public abstract class AbstractTimeContextAttributeComputer<C extends ContinuousTimeContext> implements CategoricalContextComputerIF<C>{
+public abstract class AbstractTimeContextAttributeComputer<C extends ContinuousTimeContextIF> implements CategoricalContextComputerIF<C>{
     protected final Calendar cal = Calendar.getInstance();
     protected final Attribute attribute;
     

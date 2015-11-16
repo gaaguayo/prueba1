@@ -1,9 +1,11 @@
 package es.uam.eps.ir.cars.contextualfiltering;
 
+import es.uam.eps.ir.cars.inferred.TimeContextDefinition;
 import es.uam.eps.ir.core.context.CategoricalContext;
 import es.uam.eps.ir.core.context.ContextContainer;
 import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContextIF;
+import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
 import java.util.ArrayList;
@@ -42,18 +44,24 @@ public class ContextualSlicer_CategoricalContext<U,I,C extends ContextIF> extend
         }
         return segments;
     }
-
+    
     public ContextualSegmentIF getSegment(C context){
         ContextualSegmentIF segment=null;
         
-        ContextContainer container = (ContextContainer)context;
-        List<ContextIF> ctxs = container.getContexts();
+        ContextContainer container = null;
+        List<ContextIF> ctxs = new ArrayList();
+        if (context instanceof ContextContainer){
+            container = (ContextContainer)context;
+            ctxs = container.getContexts();
+        }
         
         String contextSegment = null;
         for (ContextDefinition ctxDef : ctxDefs){
+            boolean isTimeContext = true;
             for (ContextIF ctx : ctxs){
                 String name = ((CategoricalContext)ctx).getName();
                 if (ctxDef.getName().equalsIgnoreCase(name)){
+                    isTimeContext = false;
                     if (contextSegment == null){
                         contextSegment = ((CategoricalContext)ctx).getNominalValue();
                     }
@@ -61,6 +69,14 @@ public class ContextualSlicer_CategoricalContext<U,I,C extends ContextIF> extend
                         contextSegment = contextSegment + "_" + ((CategoricalContext)ctx).getNominalValue();                        
                     }
                 }
+            }
+            if (isTimeContext){
+                if (contextSegment == null){
+                    contextSegment = ((TimeContextDefinition)ctxDef).getNominalValue((ContinuousTimeContextIF)context);
+                }
+                else{
+                    contextSegment = contextSegment + "_" + ((TimeContextDefinition)ctxDef).getNominalValue((ContinuousTimeContextIF)context);
+                }                
             }
         }
         segment = new StringContextualSegment(contextSegment);

@@ -2,6 +2,7 @@ package es.uam.eps.ir.cars.inferred;
 
 import es.uam.eps.ir.core.context.CategoricalContextDefinitionIF;
 import es.uam.eps.ir.core.context.ContextDefinition;
+import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,5 +29,9 @@ public class TimeContextDefinition extends ContextDefinition implements Categori
         for (String ctx : Arrays.asList(computer.getAttributeType().split(","))){
             addValue(ctx);
         }        
+    }
+    
+    public String getNominalValue(ContinuousTimeContextIF context){
+        return computer.getAttributeNominalValue(context);
     }
 }

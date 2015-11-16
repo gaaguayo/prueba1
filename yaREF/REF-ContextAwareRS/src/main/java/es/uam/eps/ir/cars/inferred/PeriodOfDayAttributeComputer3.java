@@ -1,13 +1,13 @@
 package es.uam.eps.ir.cars.inferred;
 
-import es.uam.eps.ir.core.context.ContinuousTimeContext;
+import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 import java.util.Calendar;
 
 /**
  *
  * @author pedro
  */
-public class PeriodOfDayAttributeComputer3<C extends ContinuousTimeContext> extends AbstractTimeContextAttributeComputer<C> implements CategoricalContextComputerIF<C>{
+public class PeriodOfDayAttributeComputer3<C extends ContinuousTimeContextIF> extends AbstractTimeContextAttributeComputer<C> implements CategoricalContextComputerIF<C>{
 
     public String getAttributeName() {
         return "PeriodOfDay3";

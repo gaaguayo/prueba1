@@ -167,6 +167,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
                     U user = preference.getUser();
                     String newItemA = "" + preference.getItem() + "_" + timeContext_A.name()  + "_" + context_A;
                     splitModel.addPreference(user, newItemA, preference.getValue(), preference.getContext());
+
 //                    Map<I,String> itemSplititemMap = useritemSplititemMap.get(user);
 //                    if (itemSplititemMap == null){
 //                        itemSplititemMap = new HashMap<I,String>();
@@ -178,8 +179,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
                     if (context_valuePair == null){
                         context_valuePair = new Pair<TimeContext,String>(timeContext_A, context_A);
                     }
-                    item_SplitContextMap.put(item, context_valuePair);
-                    
+                    item_SplitContextMap.put(item, context_valuePair);                    
                 }
                 for (PreferenceIF<U,I,C> preference : maxPreferencesB){
                     U user = preference.getUser();

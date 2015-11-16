@@ -43,7 +43,6 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
     public CategoricalContextItemSplitter() {
         this.impurityComputer = new MeanImpurity();
         this.contextDefinitions = new ArrayList<ContextDefinition>();
-//        this.useritemSplititemMap = new HashMap<U,Map<I,String>>();
         this.item_SplitContextMap = new HashMap<I,Pair<ContextDefinition,String>>();
     }
     
@@ -194,7 +193,6 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
 //                    itemSplititemMap.put(item, newItemA);
 //                    useritemSplititemMap.put(user, itemSplititemMap);
                     
-                    
                     Pair<ContextDefinition,String> context_valuePair = item_SplitContextMap.get(item);
                     if (context_valuePair == null){
                         context_valuePair = new Pair<ContextDefinition,String>(ctxDef_A, context_A);
@@ -205,7 +203,6 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
                     U user = preference.getUser();
                     String newItemB = "" + preference.getItem() + "_" + ctxDef_A.getName() + "_Other";
                     splitModel.addPreference(preference.getUser(), newItemB, preference.getValue(), preference.getContext());
-
 //                    Map<I,String> itemSplititemMap = useritemSplititemMap.get(user);
 //                    if (itemSplititemMap == null){
 //                        itemSplititemMap = new HashMap<I,String>();
