@@ -1,7 +1,7 @@
 package es.uam.eps.ir.cars.itemsplitting;
 
 import es.uam.eps.ir.cars.inferred.TimeContextDefinition;
-import es.uam.eps.ir.cars.model.ImplicitDataIF;
+import es.uam.eps.ir.cars.model.ImplicitFeedbackIF;
 import es.uam.eps.ir.core.context.CategoricalContext;
 import es.uam.eps.ir.core.context.ContextContainer;
 import es.uam.eps.ir.core.context.ContextDefinition;
@@ -114,7 +114,7 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
             sbCtx.append(" ").append(ctxDef.getName());
         }        
         logger.log(Level.INFO, "Contexts:{0}", sbCtx);
-        boolean implicitData = model instanceof ImplicitDataIF;
+        boolean implicitData = model instanceof ImplicitFeedbackIF;
         ModelIF<Object,Object,C> splitModel = null;
         ModelIF<Object,Object,C> finalModel = null;        
         try{

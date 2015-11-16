@@ -10,7 +10,7 @@ import java.util.Collection;
  *
  * @author Pedro G. Campos
  */
-public class GenericImplicitModel<U, I, C extends ContextIF> extends GenericExplicitModel<U,I,C> implements ModelIF<U, I, C>, ImplicitDataIF  {
+public class GenericImplicitModel<U, I, C extends ContextIF> extends GenericExplicitModel<U,I,C> implements ModelIF<U, I, C>, ImplicitFeedbackIF  {
 
     public GenericImplicitModel() {
         super();
