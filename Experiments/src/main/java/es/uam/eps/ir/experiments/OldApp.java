@@ -86,7 +86,7 @@ public class OldApp
             ModelIF<Object, Object, ContinuousTimeContextIF> testSet  = split.getTestingSet();
             ContextualModelUtils<Object, Object, ContinuousTimeContextIF> eTrain = new ContextualModelUtils<Object, Object, ContinuousTimeContextIF>(trainSet);
 
-            System.out.println("tr: " + trainSet.getUsers().size() + " users, "+ trainSet.getItems().size() + " items, " + eTrain.getRatingCount() + " ratings");
+            System.out.println("tr: " + trainSet.getUsers().size() + " users, "+ trainSet.getItems().size() + " items, " + eTrain.getFeedbackRecordsCount() + " ratings");
             System.out.println("te: " + testSet.getUsers().size() + " users, "+ testSet.getItems().size() + " items");
 
             // Relevants & Non-Relevants

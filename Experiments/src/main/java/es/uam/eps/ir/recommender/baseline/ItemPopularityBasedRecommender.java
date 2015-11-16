@@ -21,7 +21,7 @@ public class ItemPopularityBasedRecommender<U,I,C extends ContextIF> extends Abs
         
         // Computes max item rating count
         for (I item: model.getItems()){
-            int ratingCount = eModel.getItemRatingCount(item);
+            int ratingCount = eModel.getItemFeedbackRecordsCount(item);
             if (ratingCount > maxItemRatingCount){
                 maxItemRatingCount = ratingCount;
             }
@@ -35,7 +35,7 @@ public class ItemPopularityBasedRecommender<U,I,C extends ContextIF> extends Abs
     
     public Float predict(U user, I item, C context) {
         // Transforms frequency into rating
-        double derivedRating= (double)eModel.getItemRatingCount(item) /(double) maxItemRatingCount;
+        double derivedRating= (double)eModel.getItemFeedbackRecordsCount(item) /(double) maxItemRatingCount;
         derivedRating*=eModel.getMaxRating()-eModel.getMinRating();
         derivedRating+=eModel.getMinRating();
         return (float)derivedRating;

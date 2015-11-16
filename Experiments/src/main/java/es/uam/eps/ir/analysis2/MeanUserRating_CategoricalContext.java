@@ -154,7 +154,7 @@ public class MeanUserRating_CategoricalContext {
             for (ContextualSegmentIF segment:slicer.getSegments()){
                 ModelIF<Object,Object, ContextIF> contextSegmentModel = contextModelMap.get(segment);
                 ContextualModelUtils<Object,Object, ContextIF> cmu = contextModelUtilsMap.get(segment);
-                if (cmu.getUserRatingCount(user) >= minRatingsInContext){
+                if (cmu.getUserFeedbackRecordsCount(user) >= minRatingsInContext){
                     sb.append("\t").append(cmu.getUserMeanRating(user));
                 }
                 else{
@@ -184,7 +184,7 @@ public class MeanUserRating_CategoricalContext {
         for (ContextualSegmentIF segment:slicer.getSegments()){
             sbAll.append(dataset_name).append("\t").append(contextVars).append("\t").append(segment).append("\t");
             ContextualModelUtils<Object,Object, ContextIF> cmu = contextModelUtilsMap.get(segment);
-            if (cmu.getRatingCount() >= minRatingsInContext){
+            if (cmu.getFeedbackRecordsCount() >= minRatingsInContext){
                 sbAll.append(cmu.getMeanRating());
             }
             else{

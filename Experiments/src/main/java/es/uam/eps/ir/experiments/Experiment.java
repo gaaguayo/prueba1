@@ -1,5 +1,6 @@
 package es.uam.eps.ir.experiments;
 
+import es.uam.eps.ir.cars.itemsplitting.FisherExactImpurity;
 import es.uam.eps.ir.cars.itemsplitting.MeanImpurity;
 import es.uam.eps.ir.dataset.CommonDatasets;
 import es.uam.eps.ir.nonpersonalized.NonPersonalizedPrediction;
@@ -20,16 +21,17 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.Context_Adomavicius;
+        dataset_name = CommonDatasets.DATASET.LastFM_Time;
         // Dataset_ItemSplit
-        item_split = false;
+        item_split = true;
         minContextSizeForSplitting = 5;
         is_impurity = new MeanImpurity(1.7); // kNN min3, Mean1.7, IG0.6 Popr1.0
 //        is_impurity = new InformationGainImpurity(0.1); //
 //        is_impurity = new FisherExactImpurity(0.4); // MF-30-10 min3, Mean1.7
 //        is_contexts = Arrays.asList(TimeContextItemSplitter.TimeContext.PeriodOfDay1.name());
-//        is_contexts = Arrays.asList("PeriodOfWeek");
-        is_contexts = Arrays.asList("quadrant");
+        is_contexts = Arrays.asList("PeriodOfWeek");
+//        is_contexts = Arrays.asList("Week");
+//        is_contexts = Arrays.asList("quadrant");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype","weekend");
 //        filtering_contexts = Arrays.asList("quadrant");
@@ -87,14 +89,14 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.TimeDecay_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ItemPopularity;
 //        recommender_method  = CommonRecommenders.METHOD.ItemAvg;
-        recommender_method  = CommonRecommenders.METHOD.Random;
+//        recommender_method  = CommonRecommenders.METHOD.Random;
 //        recommender_method  = CommonRecommenders.METHOD.TimeContextItemSplitting_KNN;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Default;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Default;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
-//        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
+        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     
     

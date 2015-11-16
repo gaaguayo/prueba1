@@ -318,7 +318,7 @@ public class UserProfileAnalysis {
                     List tentativeUsers = new ArrayList(testSet.getUsers());
                     List selectedUsers = new ArrayList();
                     for (Object user: tentativeUsers){
-                        if (eTrain.getUserRatingCount(user) == 0) { continue; }
+                        if (eTrain.getUserFeedbackRecordsCount(user) == 0) { continue; }
                         selectedUsers.add(user);
                     }
                     Collections.sort(selectedUsers);
@@ -392,7 +392,7 @@ public class UserProfileAnalysis {
                     List tentativeUsers = new ArrayList(testSet.getUsers());
                     List selectedUsers = new ArrayList();
                     for (Object user: tentativeUsers){
-                        if (eTrain.getUserRatingCount(user) == 0) { continue; }
+                        if (eTrain.getUserFeedbackRecordsCount(user) == 0) { continue; }
                         selectedUsers.add(user);
                     }
                     Collections.sort(selectedUsers);
@@ -439,7 +439,7 @@ public class UserProfileAnalysis {
                     List tentativeUsers = new ArrayList(testSet.getUsers());
                     List selectedUsers = new ArrayList();
                     for (Object user: tentativeUsers){
-                        if (eTrain.getUserRatingCount(user) == 0) { continue; }
+                        if (eTrain.getUserFeedbackRecordsCount(user) == 0) { continue; }
                         selectedUsers.add(user);
                     }
                     Collections.sort(selectedUsers);
@@ -495,7 +495,7 @@ public class UserProfileAnalysis {
                     List tentativeUsers = new ArrayList(testSet.getUsers());
                     List selectedUsers = new ArrayList();
                     for (Object user: tentativeUsers){
-                        if (eTrain.getUserRatingCount(user) == 0) { continue; }
+                        if (eTrain.getUserFeedbackRecordsCount(user) == 0) { continue; }
                         selectedUsers.add(user);
                     }
                     Collections.sort(selectedUsers);
@@ -1018,13 +1018,13 @@ public class UserProfileAnalysis {
         for (int user: selectedUsers){
             i++;
             logger.log(Level.INFO, "identifying used ratings for user{0}({1} out of {2})", new Object[]{user, i, totalUsers});
-            if (eTrain.getUserRatingCount(user) == 0) { continue; } // no training data for user
+            if (eTrain.getUserFeedbackRecordsCount(user) == 0) { continue; } // no training data for user
             List<PreferenceIF> testPrefs = new ArrayList(testSet.getPreferencesFromUser(user));
             List<SimilarityDatumIF> neighbors = userNeighborsMap.get(user);
             if (testPrefs == null || neighbors == null) { continue; } // no test ratings or neighbors data
             for (PreferenceIF pref: testPrefs){
                 Integer item = (Integer)pref.getItem();
-                if (eTrain.getItemRatingCount(item) == 0) { continue; } // no training data for item
+                if (eTrain.getItemFeedbackRecordsCount(item) == 0) { continue; } // no training data for item
                 ComparablePair<Object,Object> testPair = new ComparablePair<Object,Object>(user, item);
                 int count = 0;
                 Map<Object,Float> neighborsUsed = useritemNeighborsusedMap.get(testPair);

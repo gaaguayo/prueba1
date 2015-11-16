@@ -19,25 +19,26 @@ import java.util.Set;
  */
 public class GenericExplicitModel<U, I, C extends ContextIF> implements ModelIF<U, I, C> {
     private static final long serialVersionUID = 1001L;
-    private Map<U,Map<I,Collection<InternalPreference<C,Float>>>> theModel;
+    protected Map<U,Map<I,Collection<InternalPreference<C,Float>>>> theModel;
     private List<I> items;
     private Map<I, List<U>> itemUsersMap;
     boolean dirty = false;
 
-    private void checkDirty(){
+    protected void checkDirty(){
         if (dirty) {
             dirty = false;
             sort();
         }
     }
     public Collection<? extends PreferenceIF<U, I, C>> getUniquePreferencesFromUser(U user, PreferenceAggregationFunction<U, I, C> f) {
-        checkDirty();
-        Collection<PreferenceIF<U,I,C>> preferences = new ArrayList<PreferenceIF<U,I,C>>();
-        Set<I> userItems = theModel.get(user).keySet();
-        for (I item : userItems){
-            preferences.add(f.getAggregatedValue(this.getPreferences(user, item)));
-        }
-        return preferences;
+        return getPreferencesFromUser(user);
+//        checkDirty();
+//        Collection<PreferenceIF<U,I,C>> preferences = new ArrayList<PreferenceIF<U,I,C>>();
+//        Set<I> userItems = theModel.get(user).keySet();
+//        for (I item : userItems){
+//            preferences.add(f.getAggregatedValue(this.getPreferences(user, item)));
+//        }
+//        return preferences;
     }
 
     public Collection<? extends PreferenceIF<U, I, C>> getUniquePreferencesFromItem(I item, PreferenceAggregationFunction<U, I, C> f) {

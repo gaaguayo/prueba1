@@ -42,7 +42,7 @@ public class UserBasedTimeDecayRecommenderBck<U,I,C extends ContinuousTimeContex
         float similaritySum = 0;
         int count=0;
         
-        if (eModel.getUserRatingCount(user) > 0 && eModel.getItemRatingCount(item) > 0){
+        if (eModel.getUserFeedbackRecordsCount(user) > 0 && eModel.getItemFeedbackRecordsCount(item) > 0){
             List<SimilarityDatumIF> neighborhood=nearestNeighborsComputer.getNeighbors(user);
             
             for (SimilarityDatumIF data:neighborhood){

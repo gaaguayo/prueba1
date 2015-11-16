@@ -33,7 +33,7 @@ public class SummaryPrinter<U,I,C extends ContextIF> {
             eModel = new ContextualModelUtils(model);
         }
         // ratings
-        _size=eModel.getRatingCount();
+        _size=eModel.getFeedbackRecordsCount();
         size=String.format(Locale.US,"%,10d",_size);
         summary.append(prefix).append("Ratings\t").append(size).append(newline);
         

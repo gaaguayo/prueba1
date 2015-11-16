@@ -24,7 +24,7 @@ public class RawUserSimilarityBasedRecommender<U,I,C extends ContextIF> extends 
         float prediction = 0;
         int count=0;
         
-        if (eModel.getUserRatingCount(user) > 0 && eModel.getItemRatingCount(item) > 0){
+        if (eModel.getUserFeedbackRecordsCount(user) > 0 && eModel.getItemFeedbackRecordsCount(item) > 0){
             List<SimilarityDatumIF> neighborsList=nearestNeighborsComputer.getNeighbors(user);
 
             for (SimilarityDatumIF data:neighborsList){

@@ -27,9 +27,9 @@ public class TrainValidationSetsGenerator_SizeLimit<U,I,C extends ContextIF> {
     }
 
     public TrainValidationSetsGenerator_SizeLimit(ModelIF<U,I,C> model, ContextualModelUtils<U,I,C> eModel, DatasetSplitterIF<U,I,C> splitter, int minRatingsAmount, double proportionFromOriginalSet){
-        int ratingsToSelect = (int)(eModel.getRatingCount() * proportionFromOriginalSet);
+        int ratingsToSelect = (int)(eModel.getFeedbackRecordsCount() * proportionFromOriginalSet);
         if (ratingsToSelect <= minRatingsAmount ){
-            proportionFromOriginalSet = (double)minRatingsAmount / (double)eModel.getRatingCount();
+            proportionFromOriginalSet = (double)minRatingsAmount / (double)eModel.getFeedbackRecordsCount();
         }
         SplitIF<U,I,C> split[] = splitter.split(model);
         

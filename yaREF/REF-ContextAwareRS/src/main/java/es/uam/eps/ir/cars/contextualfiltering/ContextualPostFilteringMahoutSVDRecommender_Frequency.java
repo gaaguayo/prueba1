@@ -66,8 +66,8 @@ public class ContextualPostFilteringMahoutSVDRecommender_Frequency<U,I,C extends
             return prediction;
         }
         
-        double pItemInCtx = (double)contextModel.getItemRatingCount(item) / (double)eModel.getItemRatingCount(item);
-        double pUserInCtx = (double)contextModel.getUserRatingCount(user) / (double)eModel.getUserRatingCount(user);
+        double pItemInCtx = (double)contextModel.getItemFeedbackRecordsCount(item) / (double)eModel.getItemFeedbackRecordsCount(item);
+        double pUserInCtx = (double)contextModel.getUserFeedbackRecordsCount(user) / (double)eModel.getUserFeedbackRecordsCount(user);
                 
 //        double prob=count/(double)neighborhood.length;
         double prob = pItemInCtx;

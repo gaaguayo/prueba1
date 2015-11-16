@@ -3,7 +3,7 @@
 import es.uam.eps.ir.cars.inferred.CategoricalContextComputerIF;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder.TimeContext;
-import es.uam.eps.ir.cars.model.ImplicitFeedbackIF;
+import es.uam.eps.ir.core.model.ImplicitFeedbackModelIF;
 import es.uam.eps.ir.core.context.CategoricalContext;
 import es.uam.eps.ir.core.context.ContextContainer;
 import es.uam.eps.ir.core.context.ContextDefinition;
@@ -109,7 +109,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
     @SuppressWarnings("CallToThreadDumpStack")
     public ModelIF<Object,Object,C> splitModel(ModelIF model) {
         logger.log(Level.INFO,"ItemSplitting started");
-        boolean implicitData = model instanceof ImplicitFeedbackIF;
+        boolean implicitData = model instanceof ImplicitFeedbackModelIF;
         ModelIF<Object,Object,C> splitModel = null;
         ModelIF<Object,Object,C> finalModel = null;
         try{
