@@ -1,10 +1,12 @@
 package es.uam.eps.ir.cars.itemsplitting;
 
+import es.uam.eps.ir.cars.inferred.TimeContextDefinition;
 import es.uam.eps.ir.cars.model.ImplicitDataIF;
 import es.uam.eps.ir.core.context.CategoricalContext;
 import es.uam.eps.ir.core.context.ContextContainer;
 import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContextIF;
+import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
 import es.uam.eps.ir.core.model.impl.ExplicitPreference;
@@ -16,8 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,27 +27,27 @@ import java.util.logging.Logger;
  */
 public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements ContextBasedItemSplitterIF<U,I,C>{
     private ImpurityComputerIF<U,I,C> impurityComputer;
-    private List<ContextDefinition> contextDefinitions;
+    private List<ContextDefinition> contextsForSplitting;
     private int minContextSize = 5;
     private final static Logger logger = Logger.getLogger("ExperimentLog");
 //    private Map<U,Map<I,String>> useritemSplititemMap;
     private Map<I,Pair<ContextDefinition,String>> item_SplitContextMap;
     
-    public CategoricalContextItemSplitter(ImpurityComputerIF<U, I, C> impurityComputer, List<ContextDefinition> contexts) {
+    public CategoricalContextItemSplitter(ImpurityComputerIF<U, I, C> impurityComputer, List<ContextDefinition> contextsForSplitting) {
         this.impurityComputer = impurityComputer;
-        this.contextDefinitions = contexts;
+        this.contextsForSplitting = contextsForSplitting;
 //        this.useritemSplititemMap = new HashMap<U,Map<I,String>>();
         this.item_SplitContextMap = new HashMap<I,Pair<ContextDefinition,String>>();
     }
     
     public CategoricalContextItemSplitter() {
         this.impurityComputer = new MeanImpurity();
-        this.contextDefinitions = new ArrayList<ContextDefinition>();
+        this.contextsForSplitting = new ArrayList<ContextDefinition>();
         this.item_SplitContextMap = new HashMap<I,Pair<ContextDefinition,String>>();
     }
     
     public void addContextDefinition(ContextDefinition ctxDef){
-        contextDefinitions.add(ctxDef);
+        contextsForSplitting.add(ctxDef);
     }
 
     public void setMinContextSize(int minContextSize) {
@@ -68,6 +68,20 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
 //        }
 //    }
     
+    private String getContextNominalValue(C context, ContextDefinition ctxDef){
+        String contextNominalValue = null;
+
+        if (ctxDef instanceof TimeContextDefinition){
+            contextNominalValue = ((TimeContextDefinition)ctxDef).getNominalValue((ContinuousTimeContextIF)context);                
+        }
+        else { //assuming categorical context, which must be in a ContextContainer
+            ContextContainer container = (ContextContainer)context;
+            CategoricalContext ctxVar = (CategoricalContext)container.getCategoricalContext(ctxDef);
+            contextNominalValue = ctxDef.getNominalValue(ctxVar.getValue());
+        }
+        return contextNominalValue;
+    }
+    
     public Object getSplitItemID(U user, I item, C context) {
         try{
             Pair<ContextDefinition,String> context_valuePair = item_SplitContextMap.get(item);
@@ -76,22 +90,8 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
             }
             
             ContextDefinition ctxDef = context_valuePair.getUser();
+            String contextNominalValue = getContextNominalValue(context, ctxDef);
             
-            ContextContainer container = (ContextContainer)context;
-            List<ContextIF> contexts = container.getContexts();
-            int index = 0;
-            for (ContextIF _context : contexts){
-                if (_context instanceof CategoricalContext){
-                    String ctxName = ((CategoricalContext)_context).getName();
-                    if (ctxDef.getName().equalsIgnoreCase(ctxName)){
-                        break;
-                    }
-                }
-                index++;
-            }
-            
-            CategoricalContext ctx = (CategoricalContext) container.getContexts().get(index);
-            String contextNominalValue = ctxDef.getNominalValue(  ctx.getValue() );
             String splitItemID;
             if (contextNominalValue.equalsIgnoreCase(context_valuePair.getItem())){
                 splitItemID = "" + item + "_" + ctxDef.getName()  + "_" + contextNominalValue;
@@ -110,7 +110,7 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
     public ModelIF<Object,Object,C> splitModel(ModelIF model) {
         logger.log(Level.INFO,"ItemSplitting started");
         StringBuilder sbCtx = new StringBuilder();
-        for (ContextDefinition ctxDef : contextDefinitions){
+        for (ContextDefinition ctxDef : contextsForSplitting){
             sbCtx.append(" ").append(ctxDef.getName());
         }        
         logger.log(Level.INFO, "Contexts:{0}", sbCtx);
@@ -138,14 +138,14 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
             logger.log(Level.CONFIG, "processing item {0} ({1} of {2})", new Object[]{item, ++currentItem, items.size()});
             double maxImpurity = Double.NEGATIVE_INFINITY;
             String context_A = "";
-            ContextDefinition ctxDef_A = contextDefinitions.get(0);
+            ContextDefinition ctxDef_A = contextsForSplitting.get(0);
             Collection<PreferenceIF<U,I,C>> maxPreferencesA = null;
             Collection<PreferenceIF<U,I,C>> maxPreferencesB = null;
             
             logger.log(Level.CONFIG, "requesting item {0} ({1} of {2})", new Object[]{item, currentItem, items.size()});
             Collection<? extends PreferenceIF<U,I,C>> itemPreferences = model.getPreferencesFromItem(item);
             logger.log(Level.CONFIG, "splitting item {0} ({1} of {2})", new Object[]{item, currentItem, items.size()});
-            for (ContextDefinition ctxDef : contextDefinitions){
+            for (ContextDefinition ctxDef : contextsForSplitting){
                 Map<String, Collection<PreferenceIF<U,I,C>>> contextSplits = getContextSplits(itemPreferences, ctxDef);
                 for (String contextSplitA : contextSplits.keySet()){
                     totalCombinations++;
@@ -243,22 +243,9 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
         Map<String, Collection<PreferenceIF<U,I,C>>> contextSplits = new HashMap<String, Collection<PreferenceIF<U,I,C>>>();
         
         for (PreferenceIF<U,I,C> pref: preferences){
-            ContextContainer container = (ContextContainer)pref.getContext();
-            List<ContextIF> contexts = container.getContexts();
-            int index = 0;
-            for (ContextIF context : contexts){
-                if (context instanceof CategoricalContext){
-                    String ctxName = ((CategoricalContext)context).getName();
-                    if (ctxDef.getName().equalsIgnoreCase(ctxName)){
-                        break;
-                    }
-                }
-                index++;
-            }
-            
-            CategoricalContext ctx = (CategoricalContext) container.getContexts().get(index);
-            String contextNominalValue = ctxDef.getNominalValue(  ctx.getValue() );
-            
+            C context = pref.getContext();
+            String contextNominalValue = getContextNominalValue(context, ctxDef);
+                        
             Collection<PreferenceIF<U,I,C>> splitPreferences = contextSplits.get(contextNominalValue);
             if (splitPreferences == null){
                 splitPreferences = new ArrayList<PreferenceIF<U,I,C>>();
@@ -275,7 +262,7 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
         StringBuilder name = new StringBuilder();
         name.append(impurityComputer.getClass().getSimpleName()).append("(").append(impurityComputer.impurityThreshold()).append(",").append(minContextSize).append(name).append(")");
         name.append("C=");
-        for (ContextDefinition context : contextDefinitions){
+        for (ContextDefinition context : contextsForSplitting){
             name.append(context.toString());
         }
         return name.toString();

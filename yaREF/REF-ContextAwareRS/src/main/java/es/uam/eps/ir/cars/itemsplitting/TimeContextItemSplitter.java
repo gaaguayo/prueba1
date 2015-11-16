@@ -17,6 +17,7 @@ import es.uam.eps.ir.core.util.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,22 +30,22 @@ import java.util.logging.Logger;
  */
 public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> implements ContextBasedItemSplitterIF<U,I,C>{
     private ImpurityComputerIF<U,I,C> impurityComputer;
-    private List<TimeContext> timeContexts;
+    private List<TimeContext> contextsForSplitting;
     private int minContextSize = 5;
     private final static Logger logger = Logger.getLogger("ExperimentLog");
 //    private Map<U,Map<I,String>> useritemSplititemMap;
     private Map<I,Pair<TimeContext,String>> item_SplitContextMap;
     
-    public TimeContextItemSplitter(ImpurityComputerIF<U, I, C> impurityComputer, List<TimeContext> timeContexts) {
+    public TimeContextItemSplitter(ImpurityComputerIF<U, I, C> impurityComputer, List<TimeContext> contextsForSplitting) {
         this.impurityComputer = impurityComputer;
-        this.timeContexts = timeContexts;
+        this.contextsForSplitting = contextsForSplitting;
 //        this.useritemSplititemMap = new HashMap<U,Map<I,String>>();
         this.item_SplitContextMap = new HashMap<I,Pair<TimeContext,String>>();
     }
     
     public TimeContextItemSplitter() {
         this.impurityComputer = new MeanImpurity();
-        this.timeContexts = Arrays.asList(TimeContext.values());
+        this.contextsForSplitting = Arrays.asList(TimeContext.values());
         this.item_SplitContextMap = new HashMap<I,Pair<TimeContext,String>>();
     }
 
@@ -80,7 +81,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
             TimeContext ctxDef = context_valuePair.getUser();
             
             TimeContext timeContext = null;
-            for (TimeContext _timeContext : timeContexts){
+            for (TimeContext _timeContext : contextsForSplitting){
                 if (_timeContext.compareTo(ctxDef) == 0){
                     timeContext = _timeContext;
                     break;                    
@@ -110,8 +111,10 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
         logger.log(Level.INFO,"ItemSplitting started");
         boolean implicitData = model instanceof ImplicitDataIF;
         ModelIF<Object,Object,C> splitModel = null;
+        ModelIF<Object,Object,C> finalModel = null;
         try{
             splitModel = model.getClass().newInstance();
+            finalModel = model.getClass().newInstance();
         } catch (Exception e){
         System.err.println("Problem instatiating copy of model " + model.toString() + ": " + e);
             e.printStackTrace();
@@ -137,7 +140,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
             logger.log(Level.CONFIG, "requesting item {0} ({1} of {2})", new Object[]{item, currentItem, items.size()});
             Collection<? extends PreferenceIF<U,I,C>> itemPreferences = model.getPreferencesFromItem(item);
             logger.log(Level.CONFIG, "splitting item {0} ({1} of {2})", new Object[]{item, currentItem, items.size()});
-            for (TimeContext timeContext : timeContexts){
+            for (TimeContext timeContext : contextsForSplitting){
                 Map<String, Collection<PreferenceIF<U,I,C>>> contextSplits = getContextSplits(itemPreferences, getContextComputer(timeContext));
                 for (String contextSplitA : contextSplits.keySet()){
                     totalCombinations++;
@@ -199,6 +202,17 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
                 }                
             } 
         }
+
+        List users = new ArrayList(splitModel.getUsers());
+        Collections.sort(users);
+        for (Object user : users){
+            List<PreferenceIF<Object,Object,C>> userPrefs = (List)splitModel.getPreferencesFromUser(user);
+            Collections.sort((List)userPrefs);
+            for (PreferenceIF<Object,Object,C> pref : userPrefs){
+                finalModel.addPreference(pref.getUser(), pref.getItem(), pref.getValue(), pref.getContext());
+            }
+        }
+        
         
         logger.log(Level.INFO, "totalCombinations       ={0}", totalCombinations);
         logger.log(Level.INFO, "sizeAccomplishments     ={0}", sizeAccomplishments);
@@ -233,7 +247,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
         StringBuilder name = new StringBuilder();
         name.append(impurityComputer.getClass().getSimpleName()).append("(").append(impurityComputer.impurityThreshold()).append(",").append(minContextSize).append(")");
         name.append("C=");
-        for (TimeContext context : timeContexts){
+        for (TimeContext context : contextsForSplitting){
             name.append(context.toString());
         }
         return name.toString();
