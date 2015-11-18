@@ -89,11 +89,11 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
                 return item;
             }
             
-            ContextDefinition ctxDef = context_valuePair.getUser();
+            ContextDefinition ctxDef = context_valuePair.getValue1();
             String contextNominalValue = getContextNominalValue(context, ctxDef);
             
             String splitItemID;
-            if (contextNominalValue.equalsIgnoreCase(context_valuePair.getItem())){
+            if (contextNominalValue.equalsIgnoreCase(context_valuePair.getValue2())){
                 splitItemID = "" + item + "_" + ctxDef.getName()  + "_" + contextNominalValue;
             }
             else{
@@ -287,9 +287,9 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
         for (Pair<U,I> pair : uniqueRatings.keySet()){
             Float uniqueRating = uniqueRatings.get(pair);
             if (implicitData){
-                uniqueRating = getNormalizedRating(pair.getUser(), uniqueRating, util);
+                uniqueRating = getNormalizedRating(pair.getValue1(), uniqueRating, util);
             }
-            PreferenceIF<U,I,C> pref = new ExplicitPreference<U,I,C>(pair.getUser(), pair.getItem(), uniqueContexts.get(pair), uniqueRating);
+            PreferenceIF<U,I,C> pref = new ExplicitPreference<U,I,C>(pair.getValue1(), pair.getValue2(), uniqueContexts.get(pair), uniqueRating);
             uniquePreferences.add(pref);
         }
         return uniquePreferences;

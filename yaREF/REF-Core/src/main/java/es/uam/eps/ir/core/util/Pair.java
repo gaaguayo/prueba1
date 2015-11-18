@@ -4,21 +4,21 @@ package es.uam.eps.ir.core.util;
  *
  * @author Pedro G.Campos
  */
-public class Pair<U, I> implements Comparable<Pair<U,I>> {
-    U user;
-    I item;
+public class Pair<V1, V2> implements Comparable<Pair<V1,V2>> {
+    V1 value1;
+    V2 value2;
 
-    public Pair(U user, I item) {
-        this.user = user;
-        this.item = item;
+    public Pair(V1 value1, V2 value2) {
+        this.value1 = value1;
+        this.value2 = value2;
     }
 
-    public U getUser() {
-        return user;
+    public V1 getValue1() {
+        return value1;
     }
 
-    public I getItem() {
-        return item;
+    public V2 getValue2() {
+        return value2;
     }
     
     @Override
@@ -29,38 +29,36 @@ public class Pair<U, I> implements Comparable<Pair<U,I>> {
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        Pair<U,I> other = (Pair<U,I>)obj;
-        return user == other.user && item == other.item;
+        Pair<V1,V2> other = (Pair<V1,V2>)obj;
+        return value1 == other.value1 && value2 == other.value2;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + (this.user != null ? this.user.hashCode() : 0);
-        hash = 89 * hash + (this.item != null ? this.item.hashCode() : 0);
+        hash = 89 * hash + (this.value1 != null ? this.value1.hashCode() : 0);
+        hash = 89 * hash + (this.value2 != null ? this.value2.hashCode() : 0);
         return hash;
     }
 
-    public int compareTo(Pair<U, I> o) {
+    public int compareTo(Pair<V1, V2> o) {
         int result = 0;
 
         // Comparing user IDs
         if (result == 0) {
-            String otherUserKey = o.getUser().toString();
-            String thisUserKey  = getUser().toString();
+            String otherUserKey = o.getValue1().toString();
+            String thisUserKey  = getValue1().toString();
             result = otherUserKey.compareTo(thisUserKey);
         }
 
         // Comparing item IDs
         if (result == 0) {
-            String otherItemKey = o.getItem().toString();
-            String thisItemKey  = getItem().toString();
+            String otherItemKey = o.getValue2().toString();
+            String thisItemKey  = getValue2().toString();
             result = otherItemKey.compareTo(thisItemKey);
         }
 
 
         return result;
     }
-    
-    
 }

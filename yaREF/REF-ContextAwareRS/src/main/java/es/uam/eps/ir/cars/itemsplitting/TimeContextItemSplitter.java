@@ -78,7 +78,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
                 return item;
             }
             
-            TimeContext ctxDef = context_valuePair.getUser();
+            TimeContext ctxDef = context_valuePair.getValue1();
             
             TimeContext timeContext = null;
             for (TimeContext _timeContext : contextsForSplitting){
@@ -91,7 +91,7 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
             String contextNominalValue = contextComputer.getAttributeNominalValue(context);
 
             String splitItemID;
-            if (contextNominalValue.equalsIgnoreCase(context_valuePair.getItem())){
+            if (contextNominalValue.equalsIgnoreCase(context_valuePair.getValue2())){
                 splitItemID = "" + item + "_" + ctxDef.name()  + "_" + contextNominalValue;
             }
             else{
@@ -272,9 +272,9 @@ public class TimeContextItemSplitter<U,I,C extends ContinuousTimeContextIF> impl
         for (Pair<U,I> pair : uniqueRatings.keySet()){
             Float uniqueRating = uniqueRatings.get(pair);
             if (implicitData){
-                uniqueRating = getNormalizedRating(pair.getUser(), uniqueRating, util);
+                uniqueRating = getNormalizedRating(pair.getValue1(), uniqueRating, util);
             }
-            PreferenceIF<U,I,C> pref = new ExplicitPreference<U,I,C>(pair.getUser(), pair.getItem(), uniqueContexts.get(pair), uniqueRating);
+            PreferenceIF<U,I,C> pref = new ExplicitPreference<U,I,C>(pair.getValue1(), pair.getValue2(), uniqueContexts.get(pair), uniqueRating);
             uniquePreferences.add(pref);
         }
         return uniquePreferences;

@@ -47,7 +47,7 @@ public class RORandom<U,I,C extends ContextIF> implements RatingOrderIF<U,I,C>{
         Collections.shuffle(pairsList, random);
 
         for (Pair<U,I> p : pairsList){
-            prefsList.addAll(model.getPreferences(p.getUser(), p.getItem()));
+            prefsList.addAll(model.getPreferences(p.getValue1(), p.getValue2()));
         }
         
         return prefsList;
