@@ -1,5 +1,7 @@
 package es.uam.eps.ir.cars.model;
 
+import es.uam.eps.ir.core.model.impl.GenericImplicitModel;
+import es.uam.eps.ir.core.model.impl.GenericExplicitModel;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.context.EmptyContext;
 import es.uam.eps.ir.core.model.ModelIF;

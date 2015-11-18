@@ -83,7 +83,11 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
         return true;
     }
     
-    public C getExampleContext(){ return this.exampleContext;}
+    public C getExampleContext(){ 
+        if (!meansComputed) this.meansComputation();
+        return this.exampleContext;
+    }
+    
     public Collection<I> getItemsRatedBy(U user) {
         if (!userItemsMap.containsKey(user)){
             Collection<I> userItems = new TreeSet<I>();
@@ -113,7 +117,7 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
     }
     
     public Float getItemMeanRating(I itemKey) {
-        if (!meansComputed) this.meansComputation();        
+        if (!meansComputed) this.meansComputation();
         try {
             int itemIndex=itemIndexMap.get(itemKey);
             return this.itemMeanRating[itemIndex];
@@ -219,6 +223,7 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
 
 
     public int getRatingCount() { // unique (user, item) pairs
+        if (!meansComputed) this.meansComputation();        
         return ratingCount;
     }
     

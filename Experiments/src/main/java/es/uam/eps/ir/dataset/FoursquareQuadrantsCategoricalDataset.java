@@ -33,7 +33,7 @@ public class FoursquareQuadrantsCategoricalDataset<U,I,C extends ContextIF> exte
     }
     
     protected final void setReader(){
-        reader = new TimestampedCategoricalContextModelReader<>();
+        reader = new TimestampedCategoricalContextModelReader<U,I,C>();
         TimestampedCategoricalContextModelReader<U,I,C> theReader=(TimestampedCategoricalContextModelReader<U,I,C>)reader;
         theReader.setDelimiter("\t");
         theReader.setUserIndex(0);
@@ -43,7 +43,7 @@ public class FoursquareQuadrantsCategoricalDataset<U,I,C extends ContextIF> exte
         
         int firstID=1;
         int lastID=300;
-        List<String> IDs = new ArrayList<>();
+        List<String> IDs = new ArrayList<String>();
         for (int i = firstID; i <= lastID; i++){
             IDs.add(Integer.toString(i));
         }

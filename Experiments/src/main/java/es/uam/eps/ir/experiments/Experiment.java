@@ -21,19 +21,19 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.LastFM_Time;
+        dataset_name = CommonDatasets.DATASET.Context_Adomavicius;
         // Dataset_ItemSplit
-        item_split = true;
+        item_split = false;
         minContextSizeForSplitting = 5;
         is_impurity = new MeanImpurity(1.7); // kNN min3, Mean1.7, IG0.6 Popr1.0
 //        is_impurity = new InformationGainImpurity(0.1); //
 //        is_impurity = new FisherExactImpurity(0.4); // MF-30-10 min3, Mean1.7
 //        is_contexts = Arrays.asList(TimeContextItemSplitter.TimeContext.PeriodOfDay1.name());
-        is_contexts = Arrays.asList("PeriodOfWeek");
+//        is_contexts = Arrays.asList("PeriodOfWeek");
 //        is_contexts = Arrays.asList("Week");
 //        is_contexts = Arrays.asList("quadrant");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
-//        filtering_contexts = Arrays.asList("daytype","weekend");
+        filtering_contexts = Arrays.asList("daytype");
 //        filtering_contexts = Arrays.asList("quadrant");
 //        filtering_contexts = Arrays.asList("PeriodOfWeek");
     
@@ -63,7 +63,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualPOF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualFPOF_MahoutUserBased;
-//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
+        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_POF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased_Categorical;
@@ -96,7 +96,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
-        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     
     

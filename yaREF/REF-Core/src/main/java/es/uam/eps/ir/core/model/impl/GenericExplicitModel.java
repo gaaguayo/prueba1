@@ -1,4 +1,4 @@
-package es.uam.eps.ir.cars.model;
+package es.uam.eps.ir.core.model.impl;
 
 import es.uam.eps.ir.core.model.impl.ExplicitPreference;
 import es.uam.eps.ir.core.context.ContextIF;

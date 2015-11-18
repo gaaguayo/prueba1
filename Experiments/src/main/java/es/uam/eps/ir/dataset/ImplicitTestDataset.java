@@ -1,7 +1,7 @@
 package es.uam.eps.ir.dataset;
 
 import es.uam.eps.ir.cars.model.ContinuousTimeModelReader;
-import es.uam.eps.ir.cars.model.GenericImplicitModel;
+import es.uam.eps.ir.core.model.impl.GenericImplicitModel;
 import es.uam.eps.ir.cars.model.GenericModelReader;
 import es.uam.eps.ir.core.context.ContinuousTimeContext;
 import es.uam.eps.ir.core.context.ContinuousTimeContextIF;

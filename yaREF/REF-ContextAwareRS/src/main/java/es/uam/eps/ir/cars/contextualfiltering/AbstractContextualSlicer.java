@@ -2,7 +2,7 @@ package es.uam.eps.ir.cars.contextualfiltering;
 
 import es.uam.eps.ir.core.util.ContextualModelUtils;
 import es.uam.eps.ir.core.util.ContextualModelUtils;
-import es.uam.eps.ir.cars.model.GenericExplicitModel;
+import es.uam.eps.ir.core.model.impl.GenericExplicitModel;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;

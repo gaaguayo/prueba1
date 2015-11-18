@@ -1,7 +1,7 @@
 package es.uam.eps.ir.optimization;
 
 import es.uam.eps.ir.core.util.ContextualModelUtils;
-import es.uam.eps.ir.cars.model.GenericExplicitModel;
+import es.uam.eps.ir.core.model.impl.GenericExplicitModel;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
@@ -26,10 +26,10 @@ public class TrainValidationSetsGenerator_SizeLimit<U,I,C extends ContextIF> {
         this(model, eModel, splitter, 10000, 0.2);        
     }
 
-    public TrainValidationSetsGenerator_SizeLimit(ModelIF<U,I,C> model, ContextualModelUtils<U,I,C> eModel, DatasetSplitterIF<U,I,C> splitter, int minRatingsAmount, double proportionFromOriginalSet){
-        int ratingsToSelect = (int)(eModel.getFeedbackRecordsCount() * proportionFromOriginalSet);
-        if (ratingsToSelect <= minRatingsAmount ){
-            proportionFromOriginalSet = (double)minRatingsAmount / (double)eModel.getFeedbackRecordsCount();
+    public TrainValidationSetsGenerator_SizeLimit(ModelIF<U,I,C> model, ContextualModelUtils<U,I,C> eModel, DatasetSplitterIF<U,I,C> splitter, int minFeedbackRecordsAmount, double proportionFromOriginalSet){
+        int recordsToSelect = (int)(eModel.getFeedbackRecordsCount() * proportionFromOriginalSet);
+        if (recordsToSelect <= minFeedbackRecordsAmount ){
+            proportionFromOriginalSet = (double)minFeedbackRecordsAmount / (double)eModel.getFeedbackRecordsCount();
         }
         SplitIF<U,I,C> split[] = splitter.split(model);
         
@@ -54,7 +54,7 @@ public class TrainValidationSetsGenerator_SizeLimit<U,I,C extends ContextIF> {
         Random random = new Random(0);
         
         trainSet = new GenericExplicitModel<U,I,C>();
-        for (int trainRatingsSelected = 0; trainRatingsSelected < trainSize; trainRatingsSelected++){
+        for (int trainFeedbackRecordsSelected = 0; trainFeedbackRecordsSelected < trainSize; trainFeedbackRecordsSelected++){
             int pos = random.nextInt(trainPrefs.size());
             PreferenceIF<U,I,C> pref = trainPrefs.remove(pos);
             trainSet.addPreference(pref.getUser(), pref.getItem(), pref.getValue(), pref.getContext());
@@ -62,7 +62,7 @@ public class TrainValidationSetsGenerator_SizeLimit<U,I,C extends ContextIF> {
         
         random = new Random(0);
         validationSet = new GenericExplicitModel<U,I,C>();
-        for (int validationRatingsSelected = 0; validationRatingsSelected < validationSize; validationRatingsSelected++){
+        for (int validationFeedbackRecordsSelected = 0; validationFeedbackRecordsSelected < validationSize; validationFeedbackRecordsSelected++){
             int pos = random.nextInt(validationPrefs.size());
             PreferenceIF<U,I,C> pref = validationPrefs.remove(pos);
             validationSet.addPreference(pref.getUser(), pref.getItem(), pref.getValue(), pref.getContext());
