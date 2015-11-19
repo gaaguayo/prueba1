@@ -222,7 +222,8 @@ public class ContextualModelUtils<U,I,C extends ContextIF> extends ModelUtils<U,
     }
 
 
-    public int getRatingCount() { // unique (user, item) pairs
+    @Override
+    public int getNumberOfRatings() { // unique (user, item) pairs
         if (!meansComputed) this.meansComputation();        
         return ratingCount;
     }

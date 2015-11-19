@@ -247,7 +247,7 @@ public class ContextualModelUtils_ExplicitModelTest extends TestCase {
     public void testGetRatingCount() {
         ContextualModelUtils instance = new ContextualModelUtils(model);
         int expResult = 8;
-        int result = instance.getRatingCount();
+        int result = instance.getNumberOfRatings();
         assertEquals(expResult, result);
     }
 

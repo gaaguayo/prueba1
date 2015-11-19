@@ -25,11 +25,11 @@ import junit.framework.TestCase;
  *
  * @author pedro
  */
-public class CategoricalContextItemSplitterTest extends TestCase {
+public class CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest extends TestCase {
     final ModelIF<Object, Object, ContextIF> model;
     final ContextDefinition ctxDef;
     
-    public CategoricalContextItemSplitterTest(String testName) {
+    public CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest(String testName) {
         super(testName);
         ctxDef = new ContextDefinition("ContextVariable");
         ctxDef.addValue("ctx1");
@@ -57,25 +57,10 @@ public class CategoricalContextItemSplitterTest extends TestCase {
         ctnPref.add(new CategoricalContext(ctxDef,"ctx3"));
         model.addPreference(4, 1, (float)5, ctnPref);
 
-        // pref 5: user 1, item 2, rating 1, context 1
-        ctnPref = new ContextContainer();
-        ctnPref.add(new CategoricalContext(ctxDef,"ctx1"));
-        model.addPreference(1, 2, (float)1, ctnPref);
-
-        // pref 6: user 2, item 2, rating 2, context 1
-        ctnPref = new ContextContainer();
-        ctnPref.add(new CategoricalContext(ctxDef,"ctx1"));
-        model.addPreference(2, 2, (float)2, ctnPref);
-
-        // pref 6: user 3, item 2, rating 2, context 1
-        ctnPref = new ContextContainer();
-        ctnPref.add(new CategoricalContext(ctxDef,"ctx1"));
-        model.addPreference(3, 2, (float)2, ctnPref);
-
-        // pref 8: user 3, item 3, rating 2, context 2
+        // pref 5: user 4, item 1, rating 2, context 2
         ctnPref = new ContextContainer();
         ctnPref.add(new CategoricalContext(ctxDef,"ctx2"));
-        model.addPreference(3, 3, (float)2, ctnPref);
+        model.addPreference(4, 1, (float)2, ctnPref);
     }
     
     @Override
@@ -123,8 +108,6 @@ public class CategoricalContextItemSplitterTest extends TestCase {
         Collection<Object> expResultItems = new ArrayList();
         expResultItems.add("1_ContextVariable_ctx3");
         expResultItems.add("1_ContextVariable_Other");
-        expResultItems.add("2");
-        expResultItems.add("3");
         assertEquals(resultItems.size(), expResultItems.size());
         assertTrue(resultItems.containsAll(expResultItems));
     }
@@ -132,7 +115,7 @@ public class CategoricalContextItemSplitterTest extends TestCase {
     /**
      * Test of getContextSplits method, of class CategoricalContextItemSplitter.
      */
-    public void testGetContextSplits_Item1() {
+    public void testGetContextSplits() {
         Collection<? extends PreferenceIF<Object, Object, ContextIF>> preferences = model.getPreferencesFromItem(1);
         CategoricalContextItemSplitter instance = new CategoricalContextItemSplitter();
         Map<String, Collection<PreferenceIF<Object, Object, ContextIF>>> expResult = new HashMap<String, Collection<PreferenceIF<Object, Object, ContextIF>>>();
@@ -149,6 +132,7 @@ public class CategoricalContextItemSplitterTest extends TestCase {
         ctnPref = new ContextContainer();        
         ctnPref.add(new CategoricalContext(ctxDef,"ctx2"));
         prefs.add(new ExplicitPreference(2, 1, ctnPref, (float)2));
+        prefs.add(new ExplicitPreference(4, 1, ctnPref, (float)2));
         expResult.put("ctx2", prefs);
 
         prefs = new ArrayList();

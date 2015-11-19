@@ -18,8 +18,7 @@ import java.util.Collection;
 import java.util.Date;
 import junit.framework.TestCase;
 
-/**
- *
+/** *
  * @author pedro
  */
 public class ContextualModelUtils_ImplictModel2Test extends TestCase {
@@ -247,7 +246,7 @@ public class ContextualModelUtils_ImplictModel2Test extends TestCase {
     public void testGetRatingCount() {
         ContextualModelUtils instance = new ContextualModelUtils(model);
         int expResult = 4;
-        int result = instance.getRatingCount();
+        int result = instance.getNumberOfRatings();
         assertEquals(expResult, result);
     }
 

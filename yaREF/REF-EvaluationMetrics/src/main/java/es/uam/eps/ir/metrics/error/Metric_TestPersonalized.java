@@ -85,7 +85,7 @@ public class Metric_TestPersonalized<U,I,C extends ContextIF> extends AbstractEr
         
         // Total count
         userTotalMap.put(userID, eModelTest.getUserRatingCount(userID));
-        totalCount=eModelTest.getRatingCount();
+        totalCount=eModelTest.getNumberOfRatings();
 
         
         double user_cov=(double)userPredsMap.get(userID) / (double)userTotalMap.get(userID);

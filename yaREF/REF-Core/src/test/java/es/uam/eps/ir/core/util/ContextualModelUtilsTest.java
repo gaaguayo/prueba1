@@ -1,14 +1,11 @@
-
 import es.uam.eps.ir.core.context.ContinuousTimeContext;
 import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.util.ContextualModelUtils;
 import es.uam.eps.ir.core.util.SimpleModel;
 import java.util.Collection;
-import java.util.Date;
 import java.util.TreeSet;
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
 import junit.framework.TestCase;
 
 /*
@@ -67,5 +64,5 @@ public class ContextualModelUtilsTest extends TestCase {
         Collection result2 = instance.getItemsRatedBy(2);
         assertEquals(expResult2, result2);
     }
-
+    
 }
