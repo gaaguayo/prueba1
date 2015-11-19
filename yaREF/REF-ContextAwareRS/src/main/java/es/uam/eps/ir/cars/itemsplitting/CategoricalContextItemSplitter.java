@@ -238,7 +238,9 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
         return finalModel;
     }    
     
-    
+    /*
+    * This method returns a Map whose keys are the different contexts analyzed, and the values are the Preferences associated to those contexts
+    */
     public Map<String, Collection<PreferenceIF<U, I, C>>> getContextSplits(Collection<? extends PreferenceIF<U, I, C>> preferences, ContextDefinition ctxDef) {
         Map<String, Collection<PreferenceIF<U,I,C>>> contextSplits = new HashMap<String, Collection<PreferenceIF<U,I,C>>>();
         
@@ -273,7 +275,7 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
         Map<Pair<U,I>,Float> uniqueRatings = new HashMap<Pair<U,I>,Float>();
         Map<Pair<U,I>,C> uniqueContexts = new HashMap<Pair<U,I>,C>();
         for (PreferenceIF<U,I,C> pref: preferences){
-            Pair pair = new Pair(pref.getUser(), pref.getItem());
+            Pair<U,I> pair = new Pair<U,I>(pref.getUser(), pref.getItem());
             
             Float uniqueRating = uniqueRatings.get(pair);
             if (uniqueRating == null){
@@ -297,8 +299,8 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
     
     private Float getNormalizedRating(U user, Float itemFrequency, ContextualModelUtils<U,I,C> util){
         // normalization of values
-        float minRating = new Float(1);
-        float maxRating = new Float(5);
+        float minRating = util.getMinRating();
+        float maxRating = util.getMaxRating();
         Float minUserRating = util.getMinRating(user);
         Float maxUserRating = util.getMaxRating(user);
         Float userStep = (maxUserRating - minUserRating) / (maxRating - minRating);

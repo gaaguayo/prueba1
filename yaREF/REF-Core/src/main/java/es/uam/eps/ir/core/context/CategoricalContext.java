@@ -49,4 +49,32 @@ public class CategoricalContext implements ContextIF{
         }
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (this.definition != null ? this.definition.hashCode() : 0);
+        hash = 29 * hash + this.value;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CategoricalContext other = (CategoricalContext) obj;
+        if (this.definition != other.definition && (this.definition == null || !this.definition.equals(other.definition))) {
+            return false;
+        }
+        if (this.value != other.value) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+
 }

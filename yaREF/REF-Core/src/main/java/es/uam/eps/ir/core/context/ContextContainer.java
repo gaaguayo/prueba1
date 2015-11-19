@@ -65,6 +65,28 @@ public class ContextContainer implements ContextIF {
         }
         return sb.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + (this.contexts != null ? this.contexts.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ContextContainer other = (ContextContainer) obj;
+        if (this.contexts != other.contexts && (this.contexts == null || !this.contexts.equals(other.contexts))) {
+            return false;
+        }
+        return true;
+    }
     
     
 }
