@@ -61,6 +61,11 @@ public class CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest extends
         ctnPref = new ContextContainer();
         ctnPref.add(new CategoricalContext(ctxDef,"ctx2"));
         model.addPreference(4, 1, (float)2, ctnPref);
+ 
+        // pref 6: user 4, item 1, rating 2, context 2
+        ctnPref = new ContextContainer();
+        ctnPref.add(new CategoricalContext(ctxDef,"ctx1"));
+        model.addPreference(4, 1, (float)2, ctnPref);
     }
     
     @Override
@@ -101,7 +106,9 @@ public class CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest extends
         ModelIF resultModel = instance.splitModel(model);
         ContextualModelUtils originalModelUtil = new ContextualModelUtils(model);
         ContextualModelUtils splitModelUtil = new ContextualModelUtils(resultModel);
-        assertEquals(originalModelUtil.getNumberOfRatings(), splitModelUtil.getNumberOfRatings());
+        int originalRatings = originalModelUtil.getNumberOfRatings();
+        int splitRatings = splitModelUtil.getNumberOfRatings();
+        assertEquals(originalRatings, splitRatings);
         
         
         Collection<Object> resultItems = resultModel.getItems();
@@ -126,6 +133,7 @@ public class CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest extends
         ctnPref = new ContextContainer();        
         ctnPref.add(new CategoricalContext(ctxDef,"ctx1"));
         prefs.add(new ExplicitPreference(1, 1, ctnPref, (float)1));
+        prefs.add(new ExplicitPreference(4, 1, ctnPref, (float)2));
         expResult.put("ctx1", prefs);
         
         prefs = new ArrayList();
