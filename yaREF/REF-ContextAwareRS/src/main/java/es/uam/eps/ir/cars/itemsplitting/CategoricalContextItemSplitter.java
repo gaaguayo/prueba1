@@ -158,8 +158,8 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
                     Collection<PreferenceIF<U,I,C>> uniquePreferencesA;
                     Collection<PreferenceIF<U,I,C>> uniquePreferencesB;
                     if (implicitData){
-                        uniquePreferencesA = getUniquePreferences(preferencesA, implicitData, util);
-                        uniquePreferencesB = getUniquePreferences(preferencesB, implicitData, util);
+                        uniquePreferencesA = getUniquePreferencesIn(contextSplits, contextSplitA);
+                        uniquePreferencesB = getUniquePreferencesNotIn(contextSplits, contextSplitA);
                     }
                     else{
                         uniquePreferencesA = preferencesA;
@@ -278,6 +278,53 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
         return name.toString();
     }
     
+    private Collection<PreferenceIF<U,I,C>> getUniquePreferencesIn(Map<String, Collection<PreferenceIF<U,I,C>>> contextSplits, String targetContextValue){
+        Collection<PreferenceIF<U,I,C>> uniquePreferences = new ArrayList<PreferenceIF<U,I,C>>();
+        for (String contextValue : contextSplits.keySet() ){
+            if (contextValue.equalsIgnoreCase(targetContextValue)){
+                uniquePreferences = getUniquePreferences(contextSplits.get(contextValue));
+            }           
+        }
+        return uniquePreferences;
+    }
+
+    private Collection<PreferenceIF<U,I,C>> getUniquePreferencesNotIn(Map<String, Collection<PreferenceIF<U,I,C>>> contextSplits, String targetContextValue){
+        Collection<PreferenceIF<U,I,C>> uniquePreferences = new ArrayList<PreferenceIF<U,I,C>>();
+        Collection<PreferenceIF<U,I,C>> allUniquePreferences = new ArrayList<PreferenceIF<U,I,C>>();
+        for (String contextValue : contextSplits.keySet() ){
+            if (!contextValue.equalsIgnoreCase(targetContextValue)){                
+                uniquePreferences = getUniquePreferences(contextSplits.get(contextValue));
+                allUniquePreferences.addAll(uniquePreferences);
+            }           
+        }
+        return allUniquePreferences;
+    }
+
+    private Collection<PreferenceIF<U,I,C>> getUniquePreferences(Collection<PreferenceIF<U,I,C>> preferences){
+        Collection uniquePreferences = new ArrayList<PreferenceIF<U,I,C>>();
+        Map<Pair<U,I>,Float> uniqueRatings = new HashMap<Pair<U,I>,Float>();
+        Map<Pair<U,I>,C> uniqueContexts = new HashMap<Pair<U,I>,C>();
+        for (PreferenceIF<U,I,C> pref: preferences){
+            Pair<U,I> pair = new Pair<U,I>(pref.getUser(), pref.getItem());
+            
+            Float uniqueRating = uniqueRatings.get(pair);
+            if (uniqueRating == null){
+                uniqueRating = new Float(0);
+                uniqueContexts.put(pair, pref.getContext()); // just 1 context is needed
+            }
+            uniqueRating += pref.getValue();
+            uniqueRatings.put(pair, uniqueRating);           
+        }
+        
+        for (Pair<U,I> pair : uniqueRatings.keySet()){
+            Float uniqueRating = uniqueRatings.get(pair);
+            PreferenceIF<U,I,C> pref = new ExplicitPreference<U,I,C>(pair.getValue1(), pair.getValue2(), uniqueContexts.get(pair), uniqueRating);
+            uniquePreferences.add(pref);
+        }
+        return uniquePreferences;        
+    }
+    
+    
     private Collection<PreferenceIF<U,I,C>> getUniquePreferences(Collection<PreferenceIF<U,I,C>> preferences, boolean implicitData, ContextualModelUtils<U,I,C> util){
         Collection uniquePreferences = new ArrayList<PreferenceIF<U,I,C>>();
         Map<Pair<U,I>,Float> uniqueRatings = new HashMap<Pair<U,I>,Float>();
@@ -296,9 +343,9 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
         
         for (Pair<U,I> pair : uniqueRatings.keySet()){
             Float uniqueRating = uniqueRatings.get(pair);
-            if (implicitData){
-                uniqueRating = getNormalizedRating(pair.getValue1(), uniqueRating, util);
-            }
+//            if (implicitData){
+//                uniqueRating = getNormalizedRating(pair.getValue1(), uniqueRating, util);
+//            }
             PreferenceIF<U,I,C> pref = new ExplicitPreference<U,I,C>(pair.getValue1(), pair.getValue2(), uniqueContexts.get(pair), uniqueRating);
             uniquePreferences.add(pref);
         }

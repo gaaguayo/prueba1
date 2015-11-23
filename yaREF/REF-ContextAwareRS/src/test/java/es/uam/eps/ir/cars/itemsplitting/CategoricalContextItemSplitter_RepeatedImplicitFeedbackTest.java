@@ -4,9 +4,9 @@ import es.uam.eps.ir.core.context.CategoricalContext;
 import es.uam.eps.ir.core.context.ContextContainer;
 import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContextIF;
+import es.uam.eps.ir.core.model.ImplicitFeedbackModelIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
-import es.uam.eps.ir.core.model.impl.ExplicitPreference;
 import es.uam.eps.ir.core.model.impl.GenericImplicitModel;
 import es.uam.eps.ir.core.model.impl.ImplicitPreference;
 import es.uam.eps.ir.core.util.ContextualModelUtils;
@@ -111,9 +111,16 @@ public class CategoricalContextItemSplitter_RepeatedImplicitFeedbackTest extends
         ModelIF resultModel = instance.splitModel(model);
         ContextualModelUtils originalModelUtil = new ContextualModelUtils(model);
         ContextualModelUtils splitModelUtil = new ContextualModelUtils(resultModel);
-        int originalRatings = originalModelUtil.getNumberOfRatings();
-        int splitRatings = splitModelUtil.getNumberOfRatings();
-        assertEquals(originalRatings, splitRatings);
+        if (model instanceof ImplicitFeedbackModelIF){
+            int originalPrefs = originalModelUtil.getFeedbackRecordsCount();
+            int splitPrefs = splitModelUtil.getFeedbackRecordsCount();
+            assertEquals(originalPrefs, splitPrefs);
+        }
+        else {
+            int originalRatings = originalModelUtil.getNumberOfRatings();
+            int splitRatings = splitModelUtil.getNumberOfRatings();
+            assertEquals(originalRatings, splitRatings);
+        }
         
         
         Collection<Object> resultItems = resultModel.getItems();
