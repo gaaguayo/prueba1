@@ -150,13 +150,21 @@ public class CategoricalContextItemSplitter<U,I,C extends ContextIF> implements 
                 for (String contextSplitA : contextSplits.keySet()){
                     totalCombinations++;
                     Collection<PreferenceIF<U,I,C>> preferencesA = contextSplits.get(contextSplitA);
-                    Collection<PreferenceIF<U,I,C>> uniquePreferencesA = getUniquePreferences(preferencesA, implicitData, util);
                     Collection<PreferenceIF<U,I,C>> preferencesB = new ArrayList<PreferenceIF<U,I,C>>();
                     for (String contextSplitB : contextSplits.keySet()){
                         if (contextSplitA.equalsIgnoreCase(contextSplitB)) { continue; }
                         preferencesB.addAll(contextSplits.get(contextSplitB));
                     }
-                    Collection<PreferenceIF<U,I,C>> uniquePreferencesB = getUniquePreferences(preferencesB, implicitData, util);
+                    Collection<PreferenceIF<U,I,C>> uniquePreferencesA;
+                    Collection<PreferenceIF<U,I,C>> uniquePreferencesB;
+                    if (implicitData){
+                        uniquePreferencesA = getUniquePreferences(preferencesA, implicitData, util);
+                        uniquePreferencesB = getUniquePreferences(preferencesB, implicitData, util);
+                    }
+                    else{
+                        uniquePreferencesA = preferencesA;
+                        uniquePreferencesB = preferencesB;
+                    }
                     if (uniquePreferencesA.size() < minContextSize || uniquePreferencesB.size() < minContextSize) { continue; }
                     sizeAccomplishments++;
                     double impurity = impurityComputer.getImpurity(uniquePreferencesA, uniquePreferencesB);

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package es.uam.eps.ir.cars.itemsplitting;
 
 import es.uam.eps.ir.core.context.CategoricalContext;
@@ -13,7 +7,8 @@ import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
 import es.uam.eps.ir.core.model.impl.ExplicitPreference;
-import es.uam.eps.ir.core.model.impl.GenericExplicitModel;
+import es.uam.eps.ir.core.model.impl.GenericImplicitModel;
+import es.uam.eps.ir.core.model.impl.ImplicitPreference;
 import es.uam.eps.ir.core.util.ContextualModelUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,18 +20,18 @@ import junit.framework.TestCase;
  *
  * @author pedro
  */
-public class CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest extends TestCase {
+public class CategoricalContextItemSplitter_RepeatedImplicitFeedbackTest extends TestCase {
     final ModelIF<Object, Object, ContextIF> model;
     final ContextDefinition ctxDef;
     
-    public CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest(String testName) {
+    public CategoricalContextItemSplitter_RepeatedImplicitFeedbackTest(String testName) {
         super(testName);
         ctxDef = new ContextDefinition("ContextVariable");
         ctxDef.addValue("ctx1");
         ctxDef.addValue("ctx2");
         ctxDef.addValue("ctx3");
         ContextContainer ctnPref;
-        model = new GenericExplicitModel<Object, Object, ContextIF>(); // equal number of preferences per user is required, for automated tests
+        model = new GenericImplicitModel<Object, Object, ContextIF>(); // equal number of preferences per user is required, for automated tests
         // pref 1: user 1, item 1, rating 1, context 1
         ctnPref = new ContextContainer();
         ctnPref.add(new CategoricalContext(ctxDef,"ctx1"));
@@ -45,27 +40,37 @@ public class CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest extends
         // pref 2: user 2, item 1, rating 2, context 2
         ctnPref = new ContextContainer();
         ctnPref.add(new CategoricalContext(ctxDef,"ctx2"));
-        model.addPreference(2, 1, (float)2, ctnPref);
+        model.addPreference(2, 1, (float)1, ctnPref);
+        model.addPreference(2, 1, (float)1, ctnPref);
 
         // pref 3: user 3, item 1, rating 4, context 3
         ctnPref = new ContextContainer();
         ctnPref.add(new CategoricalContext(ctxDef,"ctx3"));
-        model.addPreference(3, 1, (float)4, ctnPref);
+        model.addPreference(3, 1, (float)1, ctnPref);
+        model.addPreference(3, 1, (float)1, ctnPref);
+        model.addPreference(3, 1, (float)1, ctnPref);
+        model.addPreference(3, 1, (float)1, ctnPref);
 
         // pref 4: user 4, item 1, rating 5, context 3
         ctnPref = new ContextContainer();
         ctnPref.add(new CategoricalContext(ctxDef,"ctx3"));
-        model.addPreference(4, 1, (float)5, ctnPref);
+        model.addPreference(4, 1, (float)1, ctnPref);
+        model.addPreference(4, 1, (float)1, ctnPref);
+        model.addPreference(4, 1, (float)1, ctnPref);
+        model.addPreference(4, 1, (float)1, ctnPref);
+        model.addPreference(4, 1, (float)1, ctnPref);
 
         // pref 5: user 4, item 1, rating 2, context 2
         ctnPref = new ContextContainer();
         ctnPref.add(new CategoricalContext(ctxDef,"ctx2"));
-        model.addPreference(4, 1, (float)2, ctnPref);
+        model.addPreference(4, 1, (float)1, ctnPref);
+        model.addPreference(4, 1, (float)1, ctnPref);
  
         // pref 6: user 4, item 1, rating 2, context 2
         ctnPref = new ContextContainer();
         ctnPref.add(new CategoricalContext(ctxDef,"ctx1"));
-        model.addPreference(4, 1, (float)2, ctnPref);
+        model.addPreference(4, 1, (float)1, ctnPref);
+        model.addPreference(4, 1, (float)1, ctnPref);
     }
     
     @Override
@@ -132,28 +137,39 @@ public class CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest extends
         prefs = new ArrayList();
         ctnPref = new ContextContainer();        
         ctnPref.add(new CategoricalContext(ctxDef,"ctx1"));
-        prefs.add(new ExplicitPreference(1, 1, ctnPref, (float)1));
-        prefs.add(new ExplicitPreference(4, 1, ctnPref, (float)2));
+        prefs.add(new ImplicitPreference(1, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(4, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(4, 1, ctnPref, (float)1));
         expResult.put("ctx1", prefs);
         
         prefs = new ArrayList();
         ctnPref = new ContextContainer();        
         ctnPref.add(new CategoricalContext(ctxDef,"ctx2"));
-        prefs.add(new ExplicitPreference(2, 1, ctnPref, (float)2));
-        prefs.add(new ExplicitPreference(4, 1, ctnPref, (float)2));
+        prefs.add(new ImplicitPreference(2, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(4, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(2, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(4, 1, ctnPref, (float)1));
         expResult.put("ctx2", prefs);
 
         prefs = new ArrayList();
         ctnPref = new ContextContainer();        
         ctnPref.add(new CategoricalContext(ctxDef,"ctx3"));
-        prefs.add(new ExplicitPreference(3, 1, ctnPref, (float)4));
-        prefs.add(new ExplicitPreference(4, 1, ctnPref, (float)5));
+        prefs.add(new ImplicitPreference(3, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(4, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(4, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(4, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(4, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(4, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(3, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(3, 1, ctnPref, (float)1));
+        prefs.add(new ImplicitPreference(3, 1, ctnPref, (float)1));
         expResult.put("ctx3", prefs);
         
         Map<String, Collection<PreferenceIF<Object, Object, ContextIF>>> result = instance.getContextSplits(preferences, ctxDef);
         for (String key: expResult.keySet()){
             Collection<PreferenceIF<Object, Object, ContextIF>> prefs1=result.get(key);
             Collection<PreferenceIF<Object, Object, ContextIF>> prefs2=expResult.get(key);
+            prefs1.containsAll(prefs2);
             assertEquals(prefs1.size(), prefs2.size());
             assertTrue(prefs1.containsAll(prefs2));
         }        
