@@ -58,7 +58,13 @@ public class Pair<V1, V2> implements Comparable<Pair<V1,V2>> {
             result = otherItemKey.compareTo(thisItemKey);
         }
 
-
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Pair{" + "value1=" + value1 + ", value2=" + value2 + '}';
+    }
+    
+    
 }
