@@ -1,15 +1,19 @@
 package es.uam.eps.ir.split.impl;
 
-import es.uam.eps.ir.core.util.Pair;
 import es.uam.eps.ir.split.sizecondition.SizeConditionIF;
 import es.uam.eps.ir.split.ratingorder.RatingOrderIF;
 import es.uam.eps.ir.split.baseset.BaseSetGeneratorIF;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
+import es.uam.eps.ir.core.util.ContextualModelUtils;
+import es.uam.eps.ir.core.util.Pair;
 import es.uam.eps.ir.split.SplitIF;
 import es.uam.eps.ir.split.DatasetSplitterIF;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +53,38 @@ public class DatasetSplitter_Holdout<U,I,C extends ContextIF> implements Dataset
         }
         
         // Obtains base sets
-        Collection<ModelIF<U,I,C>> baseSets = baseSet.getBaseSets(model);
+        List<ModelIF<U,I,C>> baseSets = baseSet.getBaseSets(model);
+        // baseSets are sorted to ensure replicability
+        Collections.sort(baseSets, new Comparator<ModelIF<U,I,C>>(){
+            public int compare(ModelIF<U,I,C> m1, ModelIF<U,I,C> m2){
+                int result = m1.getUsers().size() - m2.getUsers().size();
+                
+                if (result == 0)
+                    result = m1.getItems().size() - m2.getItems().size();
+
+                if (result == 0){
+                    List<U> l1 = new ArrayList(m1.getUsers());
+                    List<U> l2 = new ArrayList(m2.getUsers());
+                    U u1 = l1.get(0);
+                    U u2 = l2.get(0);
+                    result = u1.hashCode() - u2.hashCode();
+                }
+
+                if (result == 0){
+//                    result = m1.hashCode() - m2.hashCode();
+                    ContextualModelUtils<U,I,C> utils1 = new ContextualModelUtils(m1);
+                    ContextualModelUtils<U,I,C> utils2 = new ContextualModelUtils(m2);
+                    
+                    result = utils1.getFeedbackRecordsCount() - utils2.getFeedbackRecordsCount();
+                    
+                    if (result == 0)
+                        result = (int)(utils1.getMeanRating()*1000.0) - (int)(utils2.getMeanRating()*1000.0);
+                    
+                }
+                    
+                return result;
+            }
+        });
         
         
         for (ModelIF<U,I,C> _baseSet:baseSets){
@@ -59,7 +94,7 @@ public class DatasetSplitter_Holdout<U,I,C extends ContextIF> implements Dataset
             Set<Pair<U,I>> pairs = new HashSet<Pair<U,I>>();
             Set<Pair<U,I>> trainingPairs = new HashSet<Pair<U,I>>();
             int size = sizeCondition.getNumberOfRatingsForTraining(_baseSet);
-//            int pos;
+//            int pos=0;
             
             for (PreferenceIF<U,I,C> pref : prefs){
                 Pair<U,I> pair = new Pair<U,I>(pref.getUser(), pref.getItem());

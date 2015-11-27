@@ -9,16 +9,15 @@ import java.util.Collection;
  *
  * @author Pedro G. Campos
  */
-public class MeanImpurity<U,I,C extends ContextIF> implements ImpurityComputerIF<U, I, C> {
-    private final double impurityThreshold;
+public class MeanImpurity<U,I,C extends ContextIF> extends AbstractImpurityComputer<U,I,C>  implements ImpurityComputerIF<U, I, C> {
 
     public MeanImpurity() {
-        impurityThreshold = 4.03;
+        super(4.03);
     }
-    
-    public MeanImpurity(double threshold) {
-        impurityThreshold = threshold;
-    }
+
+    public MeanImpurity(double impurityThreshold, float valueThreshold) {
+        super(impurityThreshold, valueThreshold);
+    }    
     
     public double getImpurity(Collection<PreferenceIF<U,I,C>> preferencesA, Collection<PreferenceIF<U,I,C>> preferencesB){
 

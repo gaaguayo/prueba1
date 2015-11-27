@@ -1,12 +1,9 @@
 package es.uam.eps.ir.dataset;
 
-import es.uam.eps.ir.dataset.Context_IRG.*;
 import es.uam.eps.ir.cars.model.CategoricalContextModelReader;
 import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
-import es.uam.eps.ir.dataset.AbstractDataset;
-import es.uam.eps.ir.dataset.ContextualDatasetIF;
 import java.util.Arrays;
 import java.util.List;
 

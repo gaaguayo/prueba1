@@ -8,16 +8,15 @@ import java.util.Collection;
  *
  * @author Pedro G. Campos
  */
-public class InformationGainImpurity<U,I,C extends ContextIF> implements ImpurityComputerIF<U, I, C> {
-    private final double impurityThreshold;
-    private final float valueThreshold = 4;
+public class InformationGainImpurity<U,I,C extends ContextIF> extends AbstractImpurityComputer<U,I,C>  implements ImpurityComputerIF<U, I, C> {
 
     public InformationGainImpurity() {
-        impurityThreshold = 0.9;
+        super(0.9);
     }
+
     
-    public InformationGainImpurity(double threshold) {
-        impurityThreshold = threshold;
+    public InformationGainImpurity(double impurityThreshold, float valueThreshold) {
+        super(impurityThreshold, valueThreshold);
     }
     
     public double getImpurity(Collection<PreferenceIF<U,I,C>> preferencesA, Collection<PreferenceIF<U,I,C>> preferencesB){

@@ -9,16 +9,10 @@ import java.util.Collection;
  *
  * @author Pedro G. Campos
  */
-public class ChiSquaredImpurity<U,I,C extends ContextIF> implements ImpurityComputerIF<U, I, C> {
-    private final double impurityThreshold;
-    private final float valueThreshold = 4;
-
-    public ChiSquaredImpurity() {
-        impurityThreshold = 1.65;
-    }
+public class ChiSquaredImpurity<U,I,C extends ContextIF> extends AbstractImpurityComputer<U,I,C> implements ImpurityComputerIF<U, I, C> {
     
-    public ChiSquaredImpurity(double threshold) {
-        impurityThreshold = threshold;
+    public ChiSquaredImpurity(double threshold, float value) {
+        super(threshold,value);
     }
     
     public double getImpurity(Collection<PreferenceIF<U,I,C>> preferencesA, Collection<PreferenceIF<U,I,C>> preferencesB){

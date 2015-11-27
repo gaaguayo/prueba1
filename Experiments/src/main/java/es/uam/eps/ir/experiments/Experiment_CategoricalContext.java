@@ -462,7 +462,7 @@ public class Experiment_CategoricalContext
                 if (smi[0].equalsIgnoreCase("mean")){
                     if (smi.length==2){
                         double threshold = Double.parseDouble(smi[1]);
-                        is_impurity = new MeanImpurity(threshold);
+                        is_impurity = new MeanImpurity(threshold, 4);
                     }
                     else{
                         is_impurity = new MeanImpurity();
@@ -471,7 +471,7 @@ public class Experiment_CategoricalContext
                 else if (smi[0].equalsIgnoreCase("proportion")){
                     if (smi.length==2){
                         double threshold = Double.parseDouble(smi[1]);
-                        is_impurity = new ProportionImpurity(threshold);
+                        is_impurity = new ProportionImpurity(threshold, 4);
                     }
                     else{
                         is_impurity = new ProportionImpurity();                        
@@ -480,7 +480,7 @@ public class Experiment_CategoricalContext
                 else if (smi[0].equalsIgnoreCase("IG")){
                     if (smi.length==2){
                         double threshold = Double.parseDouble(smi[1]);                    
-                        is_impurity = new InformationGainImpurity(threshold);
+                        is_impurity = new InformationGainImpurity(threshold, 4);
                     }
                     else{
                         is_impurity = new InformationGainImpurity();

@@ -1,7 +1,6 @@
 package es.uam.eps.ir.experiments;
 
 import es.uam.eps.ir.cars.bias.ModelBasedRecommender;
-import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder.TimeContext;
 import es.uam.eps.ir.cars.inferred.TimeContextDefinition;
 import es.uam.eps.ir.cars.itemsplitting.CategoricalContextItemSplitter;
@@ -12,7 +11,6 @@ import es.uam.eps.ir.cars.itemsplitting.ImpurityComputerIF;
 import es.uam.eps.ir.cars.itemsplitting.InformationGainImpurity;
 import es.uam.eps.ir.cars.itemsplitting.MeanImpurity;
 import es.uam.eps.ir.cars.itemsplitting.ProportionImpurity;
-import es.uam.eps.ir.cars.itemsplitting.TimeContextItemSplitter;
 import es.uam.eps.ir.cars.model.ContinuousTimeUtils;
 import es.uam.eps.ir.cars.model.ItemSplittingExplicitModel;
 import es.uam.eps.ir.core.context.ContextDefinition;
@@ -63,10 +61,13 @@ public class Experiment_Main
     static CommonDatasets.DATASET dataset_name;
     // Dataset_ItemSplit
     static boolean item_split = false;  // Perform item splitting pre-filtering?
-    static ImpurityComputerIF is_impurity;  // Impurity test used in item splitting pre-filtering
     static int minContextSizeForSplitting = 3; // Min. number of ratings in contexts to perform the splitting
+    static CommonImpurityComputers.IMPURITY impurity;
+    static double is_impurityThreshold = 1.0;
+    static float is_valueThreshold = 4;
     static List<String> is_contexts = null; // context variables used in item splitting pre-filtering
     static List<String> filtering_contexts = null; // context variables used in pre- and post-filtering (PRF and POF)
+    static ImpurityComputerIF is_impurity;  // Impurity test used in item splitting pre-filtering
     
     // Evaluation Methodology
     static CommonDatasetSplitters.METHOD   split_method; // Training-test splitting
@@ -231,7 +232,8 @@ public class Experiment_Main
         int nSplit = 0;
         // Process each split 
         for (SplitIF<Object, Object, ContextIF> split:splits){
-            if (item_split){
+            if (!impurity.toString().equalsIgnoreCase("NoSplitting")){
+                is_impurity = new CommonImpurityComputers().impurityThreshold(is_impurityThreshold).valueThreshold(is_valueThreshold).getComputer(impurity);
                 split = getItemSplittingSplit(split, dataset, is_impurity, minContextSizeForSplitting, is_contexts);
             }
             nSplit++;
@@ -690,7 +692,7 @@ public class Experiment_Main
         candidateParser.addArgument("-t")
                 .type(Float.class)
                 .setDefault(relevance_threshold)
-                .help("number of ratings to be asigned into test set");
+                .help("relevance threshold");
 
         candidateParser.addArgument("-n")
                 .type(Float.class)
@@ -730,13 +732,45 @@ public class Experiment_Main
                 .action(new PrintMessageAction("Available default prediction strategies:" + Arrays.toString(NonPersonalizedPrediction.Type.values()).replaceAll("\\[", "").replaceAll("\\]", "")))
                 .help("diplay available default prediction strategies");
 
-        metricsParser.addArgument("--check_limits")
+        metricsParser.addArgument("--check_prediction_values")
                 .action(Arguments.storeTrue())
                 .setDefault(false)
                 .help("turn on the cheking of prediction value limits (avoids values below or above the minimum and maximum rating value, respectively)");
 
+        // item splitting options
+        ArgumentGroup itemSplittingParser = parser.addArgumentGroup("item_splitting");
+        itemSplittingParser.addArgument("--is_impurity")
+                .type(String.class)
+                .setDefault(CommonImpurityComputers.IMPURITY.NoSplitting.toString())
+                .choices(Arrays.toString(CommonImpurityComputers.IMPURITY.values()).replaceAll("\\[", "").replaceAll("\\]", "").split(", "))
+                .help("the impurity metric to experiment with");
+
+        itemSplittingParser.addArgument("-is_context")
+                .type(String.class)
+                .help("context for item splitting");
+        
+        itemSplittingParser.addArgument("-it")
+                .type(Double.class)
+                .setDefault(is_impurityThreshold)
+                .help("Impurity threshold for the impurity metric");
+
+            itemSplittingParser.addArgument("-vt")
+                .type(Float.class)
+                .setDefault(is_valueThreshold)
+                .help("Rating value threshold for the impurity metric");
+
+            itemSplittingParser.addArgument("-is_min_ratings")
+                .type(Integer.class)
+                .setDefault(minContextSizeForSplitting)
+                .help("Minimum number of ratings for item splitting");
+            
+        
         // other options
         ArgumentGroup othersParser = parser.addArgumentGroup("others");
+        othersParser.addArgument("--filtering_contexts")
+                .type(String.class)
+                .help("contexts to be used in pre-filtering of post-filtering");
+
         othersParser.addArgument("--max_threads")
                 .type(Integer.class)
                 .setDefault(maxThreads)
@@ -772,7 +806,7 @@ public class Experiment_Main
         try{
             Namespace mainNS = parser.parseArgs(args);
             // dataset
-            
+            logger.info(mainNS.toString() + "OPTIONS:");
             dataset_name = CommonDatasets.DATASET.valueOf((String)mainNS.get("dataset"));
             
             //recommender
@@ -800,9 +834,25 @@ public class Experiment_Main
             errorMetrics = CommonErrorMetrics.METRICS.valueOf((String)mainNS.get("error"));
             rankingMetrics = CommonRankingMetrics.METRICS.valueOf((String)mainNS.get("ranking"));
             non_personalized = NonPersonalizedPrediction.Type.valueOf((String)mainNS.get("default_prediction"));
-            controlPredictionValue = mainNS.get("check_limits");
+            controlPredictionValue = mainNS.get("check_prediction_values");
+            
+            // item_splitting
+            impurity = CommonImpurityComputers.IMPURITY.valueOf((String)mainNS.get("is_impurity"));
+            is_impurityThreshold = mainNS.get("it");
+            is_valueThreshold = mainNS.get("vt");
+            minContextSizeForSplitting = mainNS.get("is_min_ratings");
+            String _is_contexts = mainNS.get("is_context");
+            if (_is_contexts != null){
+                is_contexts = new ArrayList<String>();
+                is_contexts.addAll(Arrays.asList(_is_contexts.split(",")));
+            }            
             
             //others
+            String _filtering_contexts = mainNS.get("filtering_contexts");
+            if (_filtering_contexts != null){
+                filtering_contexts = new ArrayList<String>();
+                filtering_contexts.addAll(Arrays.asList(_filtering_contexts.split(",")));
+            }
             maxThreads = mainNS.get("max_threads");
             if (maxThreads > 1) useParallelProcessor = true;
             else useParallelProcessor = false;
@@ -842,15 +892,17 @@ public class Experiment_Main
             
             
             /***************************************/
-            System.out.println("dataset: "+dataset_name);
-            System.out.println("recommender: "+recommender_method+", factors"+factors);
-            System.out.println("split method: "+split_method);
+//            System.out.println("dataset: "+dataset_name);
+//            System.out.println("recommender: "+recommender_method+", factors"+factors);
+//            System.out.println("split method: "+split_method);
         }
         catch (ArgumentParserException e){
             parser.handleError(e);
         }
-        System.exit(0);
-        
+//        System.exit(0);
+    }
+    
+    void oldProcessArgs(String[] args){
         // process parameters
         for (String arg:args){
             if (arg.startsWith("dataset")){
@@ -932,7 +984,7 @@ public class Experiment_Main
                 if (smi[0].equalsIgnoreCase("mean")){
                     if (smi.length>=2){
                         double threshold = Double.parseDouble(smi[1]);
-                        is_impurity = new MeanImpurity(threshold);
+                        is_impurity = new MeanImpurity(threshold, is_valueThreshold);
                     }
                     else{
                         is_impurity = new MeanImpurity();
@@ -941,7 +993,7 @@ public class Experiment_Main
                 else if (smi[0].equalsIgnoreCase("proportion")){
                     if (smi.length>=2){
                         double threshold = Double.parseDouble(smi[1]);
-                        is_impurity = new ProportionImpurity(threshold);
+                        is_impurity = new ProportionImpurity(threshold, is_valueThreshold);
                     }
                     else{
                         is_impurity = new ProportionImpurity();                        
@@ -950,7 +1002,7 @@ public class Experiment_Main
                 else if (smi[0].equalsIgnoreCase("IG")){
                     if (smi.length>=2){
                         double threshold = Double.parseDouble(smi[1]);                    
-                        is_impurity = new InformationGainImpurity(threshold);
+                        is_impurity = new InformationGainImpurity(threshold, is_valueThreshold);
                     }
                     else{
                         is_impurity = new InformationGainImpurity();
@@ -959,19 +1011,13 @@ public class Experiment_Main
                 else if (smi[0].equalsIgnoreCase("fisher")){
                     if (smi.length>=2){
                         double threshold = Double.parseDouble(smi[1]);                    
-                        is_impurity = new FisherExactImpurity(threshold);
-                    }
-                    else{
-                        is_impurity = new FisherExactImpurity();
+                        is_impurity = new FisherExactImpurity(threshold, is_valueThreshold);
                     }
                 }
                 else if (smi[0].equalsIgnoreCase("chiSquared")){
                     if (smi.length>=2){
                         double threshold = Double.parseDouble(smi[1]);                    
-                        is_impurity = new ChiSquaredImpurity(threshold);
-                    }
-                    else{
-                        is_impurity = new ChiSquaredImpurity();
+                        is_impurity = new ChiSquaredImpurity(threshold, is_valueThreshold);
                     }
                 }
                 else{

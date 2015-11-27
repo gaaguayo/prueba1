@@ -98,7 +98,7 @@ public class CategoricalContextItemSplitter_RepeatedExplicitFeedbackTest extends
      * Test of splitModel method, of class CategoricalContextItemSplitter.
      */
     public void testSplitModel() {
-        MeanImpurity impurity = new MeanImpurity(2);
+        MeanImpurity impurity = new MeanImpurity(2,4);
         ArrayList ctxs = new ArrayList();
         ctxs.add(ctxDef);
         CategoricalContextItemSplitter instance = new CategoricalContextItemSplitter(impurity, ctxs);

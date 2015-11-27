@@ -10,18 +10,11 @@ import org.apache.commons.math3.util.ArithmeticUtils;
  *
  * @author Pedro G. Campos
  */
-public class FisherExactImpurity<U,I,C extends ContextIF> implements ImpurityComputerIF<U, I, C> {
-    private final double impurityThreshold;
-    private final float valueThreshold = 4;
+public class FisherExactImpurity<U,I,C extends ContextIF> extends AbstractImpurityComputer<U,I,C>  implements ImpurityComputerIF<U, I, C> {
 
-    public FisherExactImpurity() {
-        impurityThreshold = 1.65;
-    }
-    
-    public FisherExactImpurity(double threshold) {
-        impurityThreshold = threshold;
-    }
-    
+    public FisherExactImpurity(double impurityThreshold, float valueThreshold) {
+        super(impurityThreshold, valueThreshold);
+    }    
     public double getImpurity(Collection<PreferenceIF<U,I,C>> preferencesA, Collection<PreferenceIF<U,I,C>> preferencesB){
 
         int highA = 0; // number of high ratings (4,5) in preferencesA

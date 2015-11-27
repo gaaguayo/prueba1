@@ -9,18 +9,17 @@ import java.util.Collection;
  *
  * @author Pedro G. Campos
  */
-public class ProportionImpurity<U,I,C extends ContextIF> implements ImpurityComputerIF<U, I, C> {
-    private final double impurityThreshold;
-    private final float valueThreshold = 4;
+public class ProportionImpurity<U,I,C extends ContextIF> extends AbstractImpurityComputer<U,I,C>  implements ImpurityComputerIF<U, I, C> {
 
     public ProportionImpurity() {
-        impurityThreshold = 1.65;
+        super(1.65);
     }
+
     
-    public ProportionImpurity(double threshold) {
-        impurityThreshold = threshold;
+    public ProportionImpurity(double impurityThreshold, float valueThreshold) {
+        super(impurityThreshold, valueThreshold);
     }
-    
+
     public double getImpurity(Collection<PreferenceIF<U,I,C>> preferencesA, Collection<PreferenceIF<U,I,C>> preferencesB){
 
         int highA = 0; // number of high ratings (4,5) in preferencesA

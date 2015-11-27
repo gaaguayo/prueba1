@@ -5,6 +5,7 @@ import es.uam.eps.ir.core.model.ModelIF;
 import es.uam.eps.ir.core.model.PreferenceIF;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -13,8 +14,8 @@ import java.util.Collection;
 public class BSUser<U,I,C extends ContextIF> implements BaseSetGeneratorIF<U,I,C>{
 
     @SuppressWarnings("CallToThreadDumpStack")
-    public Collection<ModelIF<U, I, C>> getBaseSets(ModelIF<U, I, C> model) {
-        Collection<ModelIF<U, I, C>> _collection = new ArrayList<ModelIF<U, I, C>>();
+    public List<ModelIF<U, I, C>> getBaseSets(ModelIF<U, I, C> model) {
+        List<ModelIF<U, I, C>> _collection = new ArrayList<ModelIF<U, I, C>>();
         for (U user:model.getUsers()){
             Collection<PreferenceIF<U,I,C>> prefs = (Collection<PreferenceIF<U,I,C>>)model.getPreferencesFromUser(user);
             ModelIF<U, I, C> userModel=null;
