@@ -22,29 +22,28 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
+        dataset_name = CommonDatasets.DATASET.LastFM_Time;
         // Dataset_ItemSplit
-        impurity = CommonImpurityComputers.IMPURITY.FisherExact;
+        impurity = CommonImpurityComputers.IMPURITY.NoSplitting;
         is_impurityThreshold = 1.2;
         is_valueThreshold=4;
         minContextSizeForSplitting = 5;
         
-        item_split = true;
 //        is_contexts = Arrays.asList(TimeContextItemSplitter.TimeContext.PeriodOfDay1.name());
 //        is_contexts = Arrays.asList("PeriodOfWeek");
-        is_contexts = Arrays.asList("quadrant");
+//        is_contexts = Arrays.asList("PeriodOfDay");
 //        is_contexts = Arrays.asList("quadrant");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype");
 //        filtering_contexts = Arrays.asList("quadrant");
-//        filtering_contexts = Arrays.asList("PeriodOfWeek");
+        filtering_contexts = Arrays.asList("PeriodOfWeek");
     
         // Evaluation Methodology
         split_method        = CommonDatasetSplitters.METHOD.UserRandomOrderProportionHoldout;
-        testProportion = 0.2;  // 0.085 for Ml100k // 0.054 for Ml1m
+        testProportion = 0.2;
         testSize = 10;
-        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.USER_TEST;
-        relevance_threshold=(float) 4.0;
+        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.ONE_PLUS_RANDOM_CONTEXT;
+        relevance_threshold=(float) 1.0;
         nForOnePlusRandom = 10;
         
         non_personalized = NonPersonalizedPrediction.Type.OverallMean;
@@ -62,7 +61,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.kNN_FPOF_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_UserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_POF_UserBased_Categorical;
-//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased;
+//        //recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualPOF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualFPOF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
@@ -97,8 +96,8 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.MF_Default;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
-//        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
-        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
+        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     
     
@@ -140,7 +139,7 @@ public class Experiment extends Experiment_Main
         EXPERIMENT_PREFIX = "";
         EXPERIMENT_DESCRIPTION = "";
         RESULTS_PATH = "F:/experiments/"; //"/datos/experiments/";
-        level = Level.SEVERE;
+        level = Level.INFO;
     
         // execution statistics
         maxMem=0;

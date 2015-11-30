@@ -327,8 +327,12 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
                 for (I item : userRelevantSet){
                     Set<I> itemsToEvaluate = new TreeSet<I>();
                     itemsToEvaluate.addAll(userNotRelevantSet);
-                    itemsToEvaluate.add(item);
                     C context = (C) ((CandidateItems_OnePlusRandom_Context)candidateItems).getContext(item);
+                    I itemIDinTraining = item;
+                    if (trainingSet instanceof ItemSplittingExplicitModel){
+                        itemIDinTraining = (I)((ItemSplittingExplicitModel)trainingSet).getSplitItemID(user, item, context);
+                    }
+                    itemsToEvaluate.add(itemIDinTraining);
                     List<RecommendationIF<I>> recommendations = this.getRecommendationsList(recommender, user, itemsToEvaluate, context, trainingSet, nonPersonalized, controlPredictionValue);
                     Collections.sort(recommendations);
                     userRecommendationLists.add(recommendations);
