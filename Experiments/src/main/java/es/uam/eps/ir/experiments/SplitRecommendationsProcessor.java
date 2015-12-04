@@ -485,7 +485,7 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
 //                List<RecommendationIF<I>> userNonRelevantRecommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
                 RecommendationList userNonRelevantRecommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
                 for (I item : userRelevantSet){
-                    RecommendationList<U,I> recommendations = new RecommendationList<U,I>(null); //userNonRelevantRecommendations
+                    RecommendationList recommendations = new RecommendationList(userNonRelevantRecommendations);
 //                    List<RecommendationIF<I>> recommendations = new ArrayList<RecommendationIF<I>>();
 //                    recommendations.addAll(userNonRelevantRecommendations);
                     Collection<PreferenceIF<U,I,C>> prefs = (Collection<PreferenceIF<U,I,C>>)testSet.getPreferences(user, item);
