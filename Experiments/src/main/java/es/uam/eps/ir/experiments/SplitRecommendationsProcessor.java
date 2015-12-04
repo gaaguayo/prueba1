@@ -15,6 +15,7 @@ import es.uam.eps.ir.metrics.MetricIF;
 import es.uam.eps.ir.metrics.MetricResultsIF;
 import es.uam.eps.ir.metrics.Recommendation;
 import es.uam.eps.ir.metrics.RecommendationIF;
+import es.uam.eps.ir.metrics.list.RecommendationList;
 import es.uam.eps.ir.nonpersonalized.NonPersonalizedPrediction;
 import es.uam.eps.ir.rank.CandidateItemsBuilder;
 import es.uam.eps.ir.rank.CandidateItemsIF;
@@ -287,11 +288,146 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
             nUser++;
             List<List<RecommendationIF<I>>> userRecommendationLists = userProcessor.processUser(recommender, user, nUser, tUsers, candidateItems, nonPersonalized, trainingSet, testSet, controlPredictionValue);
             metricsProcessor.processMetrics(user, nUser, tUsers, rankingMetricsComputer, errorMetricsComputer, candidateItems, SAVE_DETAILED_RESULTS, recommendationsInfo, relevantsInfo, userRecommendationLists);
+
+            
+            logger.log(Level.INFO, "Recommendations processed for user {0} out of {1}", new Object[]{String.format(Locale.US,"%,10d",nUser), String.format(Locale.US,"%,d",tUsers)});
+            if (SEND_EMAIL && nUser % 1000 == 0){
+                String computerName;
+                try{
+                    computerName = InetAddress.getLocalHost().getHostName();
+                } catch (java.net.UnknownHostException e){
+                    computerName="unknown";
+                }
+                StringBuilder header = new StringBuilder();
+                StringBuilder body = new StringBuilder();
+                header.append(computerName).append(" processed user ").append(nUser).append(" out of ").append(tUsers);
+                body.append(header).append("\n\n");
+                body.append("Recommender: ").append(recommender).append("\n");
+                body.append("Available cores: ").append(cores).append("\n");
+                body.append("Used memory: ").append(Runtime.getRuntime().totalMemory() -  Runtime.getRuntime().freeMemory()).append("\n");
+                String[] mail=new String[]{header.toString(), body.toString()};
+                MailSender.main(mail);
+                
+            }
+            
+            
         }        
     }
     
     public class UserProcessor<U,I,C extends ContextIF>{
         private ContextualModelUtils<U,I,C> eTest;  // Incluido por compatibilidad con codigo antiguo CodeTest (usado para UMUAI)
+        
+        protected List<RecommendationIF<I>> processUserPredictions(
+                final RecommenderIF<U,I,C> recommender,
+                final U user,
+                final NonPersonalizedPrediction<U,I,C> nonPersonalized,
+                final ModelIF<U,I,C> trainingSet,
+                final ModelIF<U,I,C> testSet,
+                final boolean controlPredictionValue){
+            List<RecommendationIF<I>> predictions = new ArrayList();            
+            if (! (testSet instanceof ImplicitFeedbackModelIF) ){
+                predictions = this.getPredictions(recommender, user, nonPersonalized, trainingSet, testSet, controlPredictionValue);
+            }
+            return predictions;
+        }
+        
+        protected List<RecommendationList<U,I>> processUserRecommendations(
+                final RecommenderIF<U,I,C> recommender,
+                final U user,
+                final CandidateItemsIF<U,I,C> candidateItems,
+                final NonPersonalizedPrediction<U,I,C> nonPersonalized,
+                final ModelIF<U,I,C> trainingSet,
+                final ModelIF<U,I,C> testSet,
+                final boolean controlPredictionValue){
+            // Determines items to evaluate
+            Set<I> userRelevantSet = candidateItems.getRelevantSet(user, null);
+            Set<I> userNotRelevantSet = candidateItems.getNonRelevantSet(user, null);
+            
+//            List<List<RecommendationIF<I>>> userRecommendationLists = new ArrayList<List<RecommendationIF<I>>>();
+            List<RecommendationList<U,I>> lists = new ArrayList<RecommendationList<U,I>>();
+            
+            if (candidateItems instanceof CandidateItems_OnePlusRandom_Context){ // Context-aware Koren
+                for (I item : userRelevantSet){
+                    Set<I> relevantItem = new TreeSet<I>();
+                    relevantItem.add(item);
+                    Set<I> itemsToEvaluate = new TreeSet<I>();
+                    itemsToEvaluate.addAll(userNotRelevantSet);
+                    C context = (C) ((CandidateItems_OnePlusRandom_Context)candidateItems).getContext(item);
+                    I itemIDinTraining = item;
+                    if (trainingSet instanceof ItemSplittingExplicitModel){
+                        itemIDinTraining = (I)((ItemSplittingExplicitModel)trainingSet).getSplitItemID(user, item, context);
+                    }
+                    itemsToEvaluate.add(itemIDinTraining);
+//                    List<RecommendationIF<I>> recommendations = this.getRecommendationsList(recommender, user, itemsToEvaluate, context, trainingSet, nonPersonalized, controlPredictionValue);
+                    RecommendationList recommendations = this.getRecommendationsList(recommender, user, itemsToEvaluate, context, trainingSet, nonPersonalized, controlPredictionValue);
+                    recommendations.setRelevantItems(relevantItem);
+                    recommendations.setNotRelevantItems(userNotRelevantSet);
+                    recommendations.sort();
+                    lists.add(recommendations);
+                }
+            }
+            else if (candidateItems instanceof CandidateItems_OnePlusRandom){ // common Koren
+                C context = (C)getDefaultContext();                
+//                List<RecommendationIF<I>> userNonRelevantRecommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
+                RecommendationList userNonRelevantRecommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
+                for (I item : userRelevantSet){
+                    RecommendationList recommendations = new RecommendationList(userNonRelevantRecommendations);
+//                    List<RecommendationIF<I>> recommendations = new ArrayList<RecommendationIF<I>>();
+//                    recommendations.addAll(userNonRelevantRecommendations);
+                    Collection<PreferenceIF<U,I,C>> prefs = (Collection<PreferenceIF<U,I,C>>)testSet.getPreferences(user, item);
+                    if (prefs != null){
+                        PreferenceIF<U,I,C> pref = (PreferenceIF<U,I,C>)prefs.toArray()[0]; // Every candidate item in a split is evaluated just once 
+                        context = pref.getContext();
+                    }
+                    I itemIDinTraining = item;
+                    if (trainingSet instanceof ItemSplittingExplicitModel){
+                        itemIDinTraining = (I)((ItemSplittingExplicitModel)trainingSet).getSplitItemID(user, item, context);
+                    }
+                    Float prediction = recommender.predict(user, itemIDinTraining, context);
+                    RecommendationIF<I> recommendation = this.getRecommendation(user, item, context, prediction, nonPersonalized, trainingSet, controlPredictionValue);
+                    if (recommendation != null){
+//                        recommendations.add(recommendation);
+                        recommendations.addRecommendation(recommendation);
+                    }
+//                    Collections.sort(recommendations);
+//                    userRecommendationLists.add(recommendations);
+                    recommendations.sort();
+                    lists.add(recommendations);
+                }                
+            }
+            else{ // common ranking evaluation
+                C context = (C)getDefaultContext();                
+//                List<RecommendationIF<I>> recommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
+                RecommendationList recommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
+                for (I item : userRelevantSet){
+                    Collection<PreferenceIF<U,I,C>> prefs = (Collection<PreferenceIF<U,I,C>>)testSet.getPreferences(user, item);
+                    if (prefs != null){
+                        PreferenceIF<U,I,C> pref = (PreferenceIF<U,I,C>)prefs.toArray()[0]; // Every candidate item in a split is evaluated just once 
+                        context = pref.getContext();
+                    }
+                    I itemIDinTraining = item;
+                    if (trainingSet instanceof ItemSplittingExplicitModel){
+                        itemIDinTraining = (I)((ItemSplittingExplicitModel)trainingSet).getSplitItemID(user, item, context);
+                    }
+                    Float prediction = recommender.predict(user, itemIDinTraining, context);
+                    RecommendationIF<I> recommendation = this.getRecommendation(user, item, context, prediction, nonPersonalized, trainingSet, controlPredictionValue);
+                    if (recommendation != null){
+//                        recommendations.add(recommendation);
+                        recommendations.addRecommendation(recommendation);
+                    }
+                }
+//                Collections.sort(recommendations);
+//                userRecommendationLists.add(recommendations);
+                    recommendations.sort();
+                    lists.add(recommendations);                
+            }
+            
+
+            
+            checkMem();
+            return lists;
+        }
+        
         
         protected List<List<RecommendationIF<I>>> processUser(
                 final RecommenderIF<U,I,C> recommender,
@@ -315,6 +451,7 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
 //            List<RecommendationIF<I>> userRecommendations = new ArrayList<RecommendationIF<I>>();
             
             List<List<RecommendationIF<I>>> userRecommendationLists = new ArrayList<List<RecommendationIF<I>>>();
+            List<RecommendationList<U,I>> lists = new ArrayList<RecommendationList<U,I>>();
             if (! (testSet instanceof ImplicitFeedbackModelIF) ){
                 List<RecommendationIF<I>> userTestRecommendations = this.getPredictions(recommender, user, nonPersonalized, trainingSet, testSet, controlPredictionValue);
                 userRecommendationLists.add(userTestRecommendations); // Always first
@@ -325,6 +462,8 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
             
             if (candidateItems instanceof CandidateItems_OnePlusRandom_Context){ // Context-aware Koren
                 for (I item : userRelevantSet){
+                    Set<I> relevantItem = new TreeSet<I>();
+                    relevantItem.add(item);
                     Set<I> itemsToEvaluate = new TreeSet<I>();
                     itemsToEvaluate.addAll(userNotRelevantSet);
                     C context = (C) ((CandidateItems_OnePlusRandom_Context)candidateItems).getContext(item);
@@ -333,17 +472,22 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
                         itemIDinTraining = (I)((ItemSplittingExplicitModel)trainingSet).getSplitItemID(user, item, context);
                     }
                     itemsToEvaluate.add(itemIDinTraining);
-                    List<RecommendationIF<I>> recommendations = this.getRecommendationsList(recommender, user, itemsToEvaluate, context, trainingSet, nonPersonalized, controlPredictionValue);
-                    Collections.sort(recommendations);
-                    userRecommendationLists.add(recommendations);
+//                    List<RecommendationIF<I>> recommendations = this.getRecommendationsList(recommender, user, itemsToEvaluate, context, trainingSet, nonPersonalized, controlPredictionValue);
+                    RecommendationList recommendations = this.getRecommendationsList(recommender, user, itemsToEvaluate, context, trainingSet, nonPersonalized, controlPredictionValue);
+                    recommendations.setRelevantItems(relevantItem);
+                    recommendations.setNotRelevantItems(userNotRelevantSet);
+                    recommendations.sort();
+                    lists.add(recommendations);
                 }
             }
             else if (candidateItems instanceof CandidateItems_OnePlusRandom){ // common Koren
                 C context = (C)getDefaultContext();                
-                List<RecommendationIF<I>> userNonRelevantRecommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
+//                List<RecommendationIF<I>> userNonRelevantRecommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
+                RecommendationList userNonRelevantRecommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
                 for (I item : userRelevantSet){
-                    List<RecommendationIF<I>> recommendations = new ArrayList<RecommendationIF<I>>();
-                    recommendations.addAll(userNonRelevantRecommendations);
+                    RecommendationList recommendations = new RecommendationList(userNonRelevantRecommendations);
+//                    List<RecommendationIF<I>> recommendations = new ArrayList<RecommendationIF<I>>();
+//                    recommendations.addAll(userNonRelevantRecommendations);
                     Collection<PreferenceIF<U,I,C>> prefs = (Collection<PreferenceIF<U,I,C>>)testSet.getPreferences(user, item);
                     if (prefs != null){
                         PreferenceIF<U,I,C> pref = (PreferenceIF<U,I,C>)prefs.toArray()[0]; // Every candidate item in a split is evaluated just once 
@@ -356,15 +500,19 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
                     Float prediction = recommender.predict(user, itemIDinTraining, context);
                     RecommendationIF<I> recommendation = this.getRecommendation(user, item, context, prediction, nonPersonalized, trainingSet, controlPredictionValue);
                     if (recommendation != null){
-                        recommendations.add(recommendation);
+//                        recommendations.add(recommendation);
+                        recommendations.addRecommendation(recommendation);
                     }
-                    Collections.sort(recommendations);
-                    userRecommendationLists.add(recommendations);
+//                    Collections.sort(recommendations);
+//                    userRecommendationLists.add(recommendations);
+                    recommendations.sort();
+                    lists.add(recommendations);
                 }                
             }
             else{ // common ranking evaluation
                 C context = (C)getDefaultContext();                
-                List<RecommendationIF<I>> recommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
+//                List<RecommendationIF<I>> recommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
+                RecommendationList recommendations = this.getRecommendationsList(recommender, user, userNotRelevantSet, context, trainingSet, nonPersonalized, controlPredictionValue);
                 for (I item : userRelevantSet){
                     Collection<PreferenceIF<U,I,C>> prefs = (Collection<PreferenceIF<U,I,C>>)testSet.getPreferences(user, item);
                     if (prefs != null){
@@ -378,11 +526,14 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
                     Float prediction = recommender.predict(user, itemIDinTraining, context);
                     RecommendationIF<I> recommendation = this.getRecommendation(user, item, context, prediction, nonPersonalized, trainingSet, controlPredictionValue);
                     if (recommendation != null){
-                        recommendations.add(recommendation);
+//                        recommendations.add(recommendation);
+                        recommendations.addRecommendation(recommendation);
                     }
                 }
-                Collections.sort(recommendations);
-                userRecommendationLists.add(recommendations);
+//                Collections.sort(recommendations);
+//                userRecommendationLists.add(recommendations);
+                    recommendations.sort();
+                    lists.add(recommendations);                
             }
             
 //            for (I item:itemsToEvaluate){
@@ -475,7 +626,7 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
             return recommendation;
         }
 
-        protected List<RecommendationIF<I>> getRecommendationsList(
+        protected List<RecommendationIF<I>> getRecommendationsList2(
                 final RecommenderIF<U,I,C> recommender,
                 final U user,
                 final Set<I> itemsToEvaluate,
@@ -498,6 +649,33 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
             }
             return predictions;
 
+        }
+
+        protected RecommendationList<U,I> getRecommendationsList(
+                final RecommenderIF<U,I,C> recommender,
+                final U user,
+                final Set<I> itemsToEvaluate,
+                final C context,
+                final ModelIF<U,I,C> trainingSet,
+                final NonPersonalizedPrediction<U,I,C> nonPersonalized,
+                final boolean controlPredictionValue){
+            
+            RecommendationList<U,I> list = new RecommendationList<U,I>(user, null, null);
+//            List<RecommendationIF<I>> predictions = new ArrayList<RecommendationIF<I>>();
+            for (I item:itemsToEvaluate){
+                I itemIDinTraining = item;
+                if (trainingSet instanceof ItemSplittingExplicitModel){
+                    itemIDinTraining = (I)((ItemSplittingExplicitModel)trainingSet).getSplitItemID(user, item, context);
+                }
+                Float prediction = recommender.predict(user, itemIDinTraining, context);
+                RecommendationIF<I> recommendation = this.getRecommendation(user, item, context, prediction, nonPersonalized, trainingSet, controlPredictionValue);
+                if (recommendation != null){
+//                    predictions.add(recommendation);
+                    list.addRecommendation(recommendation);
+                }
+            }
+//            return predictions;
+            return list;
         }
         
         protected List<RecommendationIF<I>> getPredictions(
