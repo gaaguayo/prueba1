@@ -5,6 +5,8 @@
  */
 package pruebauno;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author gaby
@@ -16,6 +18,7 @@ public class PruebaUno {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        JOptionPane.showMessageDialog(null, "HOLA");
     }
     
 }
