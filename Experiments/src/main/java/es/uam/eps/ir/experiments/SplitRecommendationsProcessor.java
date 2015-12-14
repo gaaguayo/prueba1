@@ -286,9 +286,11 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
         Collections.sort((List)users);
         for (U user:users){
             nUser++;
-            List<List<RecommendationIF<I>>> userRecommendationLists = userProcessor.processUser(recommender, user, nUser, tUsers, candidateItems, nonPersonalized, trainingSet, testSet, controlPredictionValue);
-            metricsProcessor.processMetrics(user, nUser, tUsers, rankingMetricsComputer, errorMetricsComputer, candidateItems, SAVE_DETAILED_RESULTS, recommendationsInfo, relevantsInfo, userRecommendationLists);
+//            List<List<RecommendationIF<I>>> userRecommendationLists = userProcessor.processUser(recommender, user, nUser, tUsers, candidateItems, nonPersonalized, trainingSet, testSet, controlPredictionValue);
+//            metricsProcessor.processMetrics(user, nUser, tUsers, rankingMetricsComputer, errorMetricsComputer, candidateItems, SAVE_DETAILED_RESULTS, recommendationsInfo, relevantsInfo, userRecommendationLists);
 
+            List<RecommendationIF<I>> userPredictions = userProcessor.processUserPredictions(recommender, user, nonPersonalized, trainingSet, testSet, controlPredictionValue);
+            List<RecommendationList<U,I>> userRecommendationLists = userProcessor.processUserRecommendations(recommender, user, candidateItems, nonPersonalized, trainingSet, testSet, controlPredictionValue);
             
             logger.log(Level.INFO, "Recommendations processed for user {0} out of {1}", new Object[]{String.format(Locale.US,"%,10d",nUser), String.format(Locale.US,"%,d",tUsers)});
             if (SEND_EMAIL && nUser % 1000 == 0){
@@ -309,6 +311,37 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
                 MailSender.main(mail);
                 
             }
+
+//            metricsProcessor.processMetrics(user, nUser, tUsers, rankingMetricsComputer, errorMetricsComputer, candidateItems, SAVE_DETAILED_RESULTS, recommendationsInfo, relevantsInfo, userRecommendationLists);
+            metricsProcessor.processErrorMetrics(user, errorMetricsComputer, candidateItems, SAVE_DETAILED_RESULTS, recommendationsInfo, relevantsInfo, userPredictions);
+            metricsProcessor.processRankingMetrics(user, rankingMetricsComputer, candidateItems, SAVE_DETAILED_RESULTS, recommendationsInfo, relevantsInfo, userRecommendationLists);
+            
+            // Recommendations info
+            if (SAVE_DETAILED_RESULTS){
+                final String newline = System.getProperty("line.separator");
+                Set<I> userRelevantSet = candidateItems.getRelevantSet(user, null);
+                for (I item:userRelevantSet){
+                    relevantsInfo.append(user).append("\t0\t").append(item).append("\t1").append(newline);
+                }
+                int j = 0;
+                recommendationsInfo.add(new StringBuilder());
+                for (RecommendationIF<I> r:userPredictions){
+                    float trueRating = 0;
+                    trueRating = ((ModelIF<U,I,C>)testSet).getPreferenceValue(user, r.getItemID(), null);
+                    recommendationsInfo.get(0).append(user).append("\t").append(0).append("\t").append(r.getItemID()).append("\t").append(++j).append("\t").append(r.getValue()).append("\t").append(trueRating).append(newline);
+                }
+                                
+                for (int list = 1; list < userRecommendationLists.size()+1; list++){
+                    if (recommendationsInfo.size() < userRecommendationLists.size()+1){
+                        recommendationsInfo.add(new StringBuilder());
+                    }
+                    j = 0;
+                    for (RecommendationIF<I> r:userRecommendationLists.get(list).getRecommendations()){
+                        recommendationsInfo.get(list).append(user).append("\t").append(list).append("\t").append(r.getItemID()).append("\t").append(++j).append("\t").append(r.getValue()).append("\t").append(0).append(newline);
+                    }                    
+                }
+            }
+            logger.log(Level.INFO, "Metrics processed for user {0} out of {1}", new Object[]{String.format(Locale.US,"%,10d",nUser), String.format(Locale.US,"%,d",tUsers)});            
             
             
         }        
@@ -711,6 +744,48 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
     
     public class MetricsProcessor<U,I,C extends ContextIF>{
 
+        protected void processErrorMetrics(
+                final U user,
+                final MetricIF<U,I,C> errorMetricsComputer[],
+                final CandidateItemsIF<U,I,C> candidateItems,
+                final boolean SAVE_DETAILED_RESULTS,
+                final List<StringBuilder> recommendationsInfo,
+                final StringBuilder relevantsInfo,
+                final List<RecommendationIF<I>> predictions){
+            
+            Set<I> userRelevantSet = candidateItems.getRelevantSet(user, null);
+            Set<I> userNotRelevantSet = candidateItems.getNonRelevantSet(user, null);
+            // Compute metrics
+            if (errorMetricsComputer != null){
+                for (int i = 0; i < errorMetricsComputer.length; i++){
+                    errorMetricsComputer[i].processUserList(user, predictions, userRelevantSet, userNotRelevantSet);
+                }
+            }
+        }
+        
+        protected void processRankingMetrics(
+                final U user,
+                final MetricIF<U,I,C> rankingMetricsComputer[],
+                final CandidateItemsIF<U,I,C> candidateItems,
+                final boolean SAVE_DETAILED_RESULTS,
+                final List<StringBuilder> recommendationsInfo,
+                final StringBuilder relevantsInfo,
+                final List<RecommendationList<U,I>> recommendations){
+            
+            Set<I> userRelevantSet = candidateItems.getRelevantSet(user, null);
+            Set<I> userNotRelevantSet = candidateItems.getNonRelevantSet(user, null);
+
+            // Compute metrics
+            if (rankingMetricsComputer != null){
+                for (int list = 0; list < recommendations.size(); list++){
+                    for (int i = 0; i < rankingMetricsComputer.length; i++){
+                        rankingMetricsComputer[i].processUserList(user, recommendations.get(list).getRecommendations(), userRelevantSet, userNotRelevantSet);
+                    }
+                }
+            }
+        }
+
+        
         protected void processMetrics(
                 final U user,
                 final int nUser,

@@ -22,7 +22,7 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.MovieLens1m_60users;
+        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
         // Dataset_ItemSplit
         impurity = CommonImpurityComputers.IMPURITY.NoSplitting;
         is_impurityThreshold = 1.2;
@@ -52,7 +52,7 @@ public class Experiment extends Experiment_Main
     
         // Evaluation Metrics
         rankingMetrics = CommonRankingMetrics.METRICS.COMMON;
-        errorMetrics = CommonErrorMetrics.METRICS.COMMON;
+        errorMetrics = CommonErrorMetrics.METRICS.ALL;
         levels = Arrays.asList(5,10,20,50);
     
 //      // Recommendation method
@@ -90,14 +90,14 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.TimeDecay_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ItemPopularity;
 //        recommender_method  = CommonRecommenders.METHOD.ItemAvg;
-        recommender_method  = CommonRecommenders.METHOD.Random;
+//        recommender_method  = CommonRecommenders.METHOD.Random;
 //        recommender_method  = CommonRecommenders.METHOD.TimeContextItemSplitting_KNN;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Default;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Default;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
-//        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
+        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     
     
