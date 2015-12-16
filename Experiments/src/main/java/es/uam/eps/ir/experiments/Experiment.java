@@ -1,8 +1,5 @@
 package es.uam.eps.ir.experiments;
 
-import es.uam.eps.ir.cars.itemsplitting.FisherExactImpurity;
-import es.uam.eps.ir.cars.itemsplitting.InformationGainImpurity;
-import es.uam.eps.ir.cars.itemsplitting.MeanImpurity;
 import es.uam.eps.ir.dataset.CommonDatasets;
 import es.uam.eps.ir.nonpersonalized.NonPersonalizedPrediction;
 import es.uam.eps.ir.rank.CandidateItemsBuilder;
@@ -22,10 +19,10 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:\\experiments\\global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
+        dataset_name = CommonDatasets.DATASET.Context_Adomavicius;
         // Dataset_ItemSplit
         impurity = CommonImpurityComputers.IMPURITY.NoSplitting;
-        is_impurityThreshold = 1.2;
+        is_impurityThreshold = 0.6;
         is_valueThreshold=4;
         minContextSizeForSplitting = 5;
         
@@ -33,6 +30,7 @@ public class Experiment extends Experiment_Main
 //        is_contexts = Arrays.asList("PeriodOfWeek");
 //        is_contexts = Arrays.asList("PeriodOfDay");
 //        is_contexts = Arrays.asList("quadrant");
+        is_contexts = Arrays.asList("daytype");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype");
 //        filtering_contexts = Arrays.asList("quadrant");
@@ -42,7 +40,7 @@ public class Experiment extends Experiment_Main
         split_method        = CommonDatasetSplitters.METHOD.UserRandomOrderProportionHoldout;
         testProportion = 0.2;
         testSize = 10;
-        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.COMMUNITY_TEST;
+        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.USER_TEST;
         relevance_threshold=(float) 1.0;
         nForOnePlusRandom = 10;
         

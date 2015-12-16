@@ -336,7 +336,7 @@ public class SplitRecommendationsProcessor<U,I,C extends ContextIF> {
                         recommendationsInfo.add(new StringBuilder());
                     }
                     j = 0;
-                    for (RecommendationIF<I> r:userRecommendationLists.get(list).getRecommendations()){
+                    for (RecommendationIF<I> r:userRecommendationLists.get(list-1).getRecommendations()){
                         recommendationsInfo.get(list).append(user).append("\t").append(list).append("\t").append(r.getItemID()).append("\t").append(++j).append("\t").append(r.getValue()).append("\t").append(0).append(newline);
                     }                    
                 }
