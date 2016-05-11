@@ -1,5 +1,7 @@
 package es.uam.eps.ir.experiments;
 
+
+import ImplicitToExplicitTransformation.TransformationManager;
 import es.uam.eps.ir.cars.bias.ModelBasedRecommender;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder.TimeContext;
 import es.uam.eps.ir.cars.inferred.TimeContextDefinition;
@@ -16,6 +18,7 @@ import es.uam.eps.ir.cars.model.ItemSplittingExplicitModel;
 import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
+import es.uam.eps.ir.core.model.PreferenceIF;
 import es.uam.eps.ir.core.rec.RecommenderIF;
 import es.uam.eps.ir.core.util.ContextualModelUtils;
 import es.uam.eps.ir.dataset.CommonDatasets;
@@ -52,6 +55,7 @@ import utils.LogFormatter;
 import utils.MailSender;
 import utils.PrintUtils;
 import utils.SummaryPrinter;
+
 /**
  *
  */
@@ -150,6 +154,11 @@ public class Experiment_Main
         processArgs(args);
         exec_experiment(args);
     }
+   
+        
+
+   
+ 
     public static void exec_experiment( String[] args ){
         params = GlobalParams.getGlobalParams(CONFIG_FILE);
         // Logger init
@@ -173,7 +182,7 @@ public class Experiment_Main
         
         // Data load
         logger.info("Loading data");
-//        DatasetIF<Object, Object, ContextIF> originalDataset = new CommonDatasets(args).getDataset(dataset_name);
+        DatasetIF<Object, Object, ContextIF> originalDataset = new CommonDatasets(args).getDataset(dataset_name);
         DatasetIF<Object, Object, ContextIF> dataset = new CommonDatasets(args).getDataset(dataset_name);
         
 //        DatasetIF<Object, Object, ContextIF> dataset;
@@ -187,6 +196,18 @@ public class Experiment_Main
         }
         
         ModelIF<Object, Object, ContextIF> model = dataset.getModel();
+//        ModelIF<Object, Object, ContextIF> model;
+//        ModelIF<Object, Object, ContextIF> model1;
+//        ModelIF<Object, Object, ContextIF> model2;
+
+
+        TransformationManager.TransformationMethod method = TransformationManager.TransformationMethod.Basic;
+        TransformationManager.TransformationLevel level = TransformationManager.TransformationLevel.IndividualContext;
+        
+        TransformationManager manager= new TransformationManager(method, level);        
+        model= manager.toExplicit(model);
+
+        
         logger.info("Data loaded");
         final StringBuilder datasetInfo = new StringBuilder();
         datasetInfo.append(newline).append("DatasetSummary").append(newline);
@@ -195,7 +216,9 @@ public class Experiment_Main
         experimentInfo.append(datasetInfo);
         System.out.print(datasetInfo);
         checkMem();
-//        System.exit(0);
+       
+        /// inicio del codigo de Gabriela
+
         
         // Training-test splitter
         logger.info("Splitting data");        
@@ -1522,4 +1545,5 @@ public class Experiment_Main
         }
 
     }
+    
 }

@@ -19,10 +19,10 @@ public class Experiment extends Experiment_Main
         //////////////////////
         // PARAMETER VALUES //
         //////////////////////
-        CONFIG_FILE = "F:\\experiments\\global.config";
+        CONFIG_FILE = "C:/tesis/dataset/global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.MovieLens1m_60users;
+        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
         // Dataset_ItemSplit
         impurity = CommonImpurityComputers.IMPURITY.NoSplitting;
         is_impurityThreshold = 1.2;
@@ -34,7 +34,7 @@ public class Experiment extends Experiment_Main
 //        is_contexts = Arrays.asList("PeriodOfDay");
 //        is_contexts = Arrays.asList("quadrant");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
-//        filtering_contexts = Arrays.asList("daytype");
+//        filtering_contexts = Arrays.asList("daytype","conpany");
 //        filtering_contexts = Arrays.asList("quadrant");
         filtering_contexts = Arrays.asList("PeriodOfWeek");
     
