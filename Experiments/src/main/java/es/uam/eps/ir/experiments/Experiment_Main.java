@@ -1,5 +1,6 @@
 package es.uam.eps.ir.experiments;
 
+import cars.context.ContextDefinitionManager;
 import es.uam.eps.ir.cars.bias.ModelBasedRecommender;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder.TimeContext;
 import es.uam.eps.ir.cars.inferred.TimeContextDefinition;
@@ -309,39 +310,13 @@ public class Experiment_Main
             }
             
             recommenderString += "_NonPers=" + non_personalized;
-            List<ContextDefinition> selectedCategoricalContextDefinitions = null;
-            List<TimeContext> selectedContinuousTimeContextDefinitions = null;
-            // Slicer (for pre/post-filtering)
-            if (filtering_contexts != null){
-                if (dataset instanceof ContextualDatasetIF){
-                    List<ContextDefinition> allCategoricalContextDefinitions = ((ContextualDatasetIF)dataset).getContextDefinitions();
-                    selectedCategoricalContextDefinitions = new ArrayList<ContextDefinition>();
-                    for (String context : filtering_contexts){
-                        for (ContextDefinition ctxDef : allCategoricalContextDefinitions){
-                            if (ctxDef.getName().equalsIgnoreCase(context)){
-                                selectedCategoricalContextDefinitions.add(ctxDef);
-                                logger.info("Filtering by " + context + " categorical context");
-                            }
-                        }
-                        for (TimeContext tc : TimeContext.values()){
-                            if (tc.name().equalsIgnoreCase(context)){
-                                selectedCategoricalContextDefinitions.add(new TimeContextDefinition(context));                                
-                                logger.info("Filtering by " + context + " time context");
-                            }
-                        }
-                    }
-                }
-//                else{
-//                    selectedContinuousTimeContextDefinitions = new ArrayList<TimeContext>();
-//                    for (String context : filtering_contexts){
-//                        for (TimeContext tc : TimeContext.values()){
-//                            if (tc.name().equalsIgnoreCase(context)){
-//                                selectedContinuousTimeContextDefinitions.add(tc);
-//                            }
-//                        }
-//                    }
-//                }
-            }                        
+            
+            // Context(s) for contextual pre/post filtering or modeling
+            List<ContextDefinition> selectedCategoricalContextDefinitions = ContextDefinitionManager.getContextDefinitions(dataset, filtering_contexts);
+            for (ContextDefinition ctxDef : selectedCategoricalContextDefinitions){
+                logger.log(Level.INFO, "Filtering by {0} context", ctxDef.getName());
+            }
+            
             EXPERIMENT_DESCRIPTION = datasetString  + "/" + datasetDetailsString + "__"  + recommenderString + "__" + splitter + candidates + "_" + relevance_threshold + "__";
 
             // Check if previous results file exist
@@ -366,7 +341,7 @@ public class Experiment_Main
                     .halfLifeProp(halfLifeProportion)
                     .trTimespan(split)
                     .categoricalContextFilter(selectedCategoricalContextDefinitions)
-                    .continuousTimeContextFilter(selectedContinuousTimeContextDefinitions)
+//                    .continuousTimeContextFilter(selectedContinuousTimeContextDefinitions)
                     .optimizationData(splitter, split)
                     .getRecommender(recommender_method, split.getTrainingSet());
             final StringBuilder recommenderInfo = new StringBuilder();
