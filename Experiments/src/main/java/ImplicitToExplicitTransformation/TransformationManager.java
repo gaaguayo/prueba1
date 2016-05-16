@@ -38,11 +38,12 @@ public class TransformationManager<U, I, C extends ContextIF> {
     TransformationMethod method;
     TransformationLevel level;
     
-    List<ContextDefinition> listaContextDef= new ArrayList<ContextDefinition>();
+    List<ContextDefinition> listaContextDef;
 
-    public TransformationManager(TransformationMethod method, TransformationLevel level) {
+    public TransformationManager(TransformationMethod method, TransformationLevel level, List<ContextDefinition> contextsToAnalize) {
         this.method = method;
         this.level = level;
+        this.listaContextDef = contextsToAnalize;
     }
     
     private ContextAwereItoE getFeedbackAnalyzer(ModelIF<U, I, C> implicitFeedbackModel){
@@ -110,6 +111,7 @@ public class TransformationManager<U, I, C extends ContextIF> {
         nightWeekSummerCtx.add(_weekCtx);
         nightWeekSummerCtx.add(_summerCtx);
  
+        listaContextDef = new ArrayList<ContextDefinition>();
         listaContextDef.add(ctxDef1);
         listaContextDef.add(ctxDef2);
       

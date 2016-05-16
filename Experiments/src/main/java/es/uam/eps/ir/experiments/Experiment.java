@@ -1,12 +1,15 @@
 package es.uam.eps.ir.experiments;
 
+import ImplicitToExplicitTransformation.TransformationManager;
 import es.uam.eps.ir.cars.itemsplitting.FisherExactImpurity;
 import es.uam.eps.ir.cars.itemsplitting.InformationGainImpurity;
 import es.uam.eps.ir.cars.itemsplitting.MeanImpurity;
+import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.dataset.CommonDatasets;
 import es.uam.eps.ir.nonpersonalized.NonPersonalizedPrediction;
 import es.uam.eps.ir.rank.CandidateItemsBuilder;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 /**
  *
@@ -19,16 +22,16 @@ public class Experiment extends Experiment_Main
         //////////////////////
         // PARAMETER VALUES //
         //////////////////////
-        CONFIG_FILE = "C:/tesis/dataset/global.config";
+        CONFIG_FILE = "F:/experiments/global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.FoursquareQuadrantsCategorical;
+        dataset_name = CommonDatasets.DATASET.FoursquareQuadrants;
+        
         // Dataset_ItemSplit
         impurity = CommonImpurityComputers.IMPURITY.NoSplitting;
         is_impurityThreshold = 1.2;
         is_valueThreshold=4;
         minContextSizeForSplitting = 5;
-        
 //        is_contexts = Arrays.asList(TimeContextItemSplitter.TimeContext.PeriodOfDay1.name());
 //        is_contexts = Arrays.asList("PeriodOfWeek");
 //        is_contexts = Arrays.asList("PeriodOfDay");
@@ -38,6 +41,13 @@ public class Experiment extends Experiment_Main
 //        filtering_contexts = Arrays.asList("quadrant");
         filtering_contexts = Arrays.asList("PeriodOfWeek");
     
+        // Dataset_ImplicitToExplicitFeedback
+        applyImplicitToExplicitFeedbackTransformation = false; // Perform context-aware implicit to explicit feeback transformation?
+        contextsToAnalyze = null;
+        transformationMethod = TransformationManager.TransformationMethod.Basic;
+        tranformationLevel = TransformationManager.TransformationLevel.IndividualContext;
+        
+        
         // Evaluation Methodology
         split_method        = CommonDatasetSplitters.METHOD.UserRandomOrderProportionHoldout;
         testProportion = 0.2;

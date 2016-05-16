@@ -64,7 +64,7 @@ public class Experiment_Main
     // Dataset
     static CommonDatasets.DATASET dataset_name;
     // Dataset_ItemSplit
-    static boolean item_split = false;  // Perform item splitting pre-filtering?
+    static boolean applyItemSplittingPreFiltering = false;  // Perform item splitting pre-filtering?
     static int minContextSizeForSplitting = 3; // Min. number of ratings in contexts to perform the splitting
     static CommonImpurityComputers.IMPURITY impurity;
     static double is_impurityThreshold = 1.0;
@@ -72,6 +72,13 @@ public class Experiment_Main
     static List<String> is_contexts = null; // context variables used in item splitting pre-filtering
     static List<String> filtering_contexts = null; // context variables used in pre- and post-filtering (PRF and POF)
     static ImpurityComputerIF is_impurity;  // Impurity test used in item splitting pre-filtering
+    
+    // Dataset_ImplicitToExplicitFeedback
+    static boolean applyImplicitToExplicitFeedbackTransformation = false; // Perform context-aware implicit to explicit feeback transformation?
+    static List<ContextDefinition> contextsToAnalyze = null;
+    static TransformationManager.TransformationMethod transformationMethod = null;
+    static TransformationManager.TransformationLevel tranformationLevel = null;
+    
     
     // Evaluation Methodology
     static CommonDatasetSplitters.METHOD   split_method; // Training-test splitting
@@ -186,7 +193,7 @@ public class Experiment_Main
         DatasetIF<Object, Object, ContextIF> dataset = new CommonDatasets(args).getDataset(dataset_name);
         
 //        DatasetIF<Object, Object, ContextIF> dataset;
-//        if (item_split){
+//        if (applyItemSplittingPreFiltering){
 //            dataset = new ItemSplitDataset(originalDataset, is_impurity, is_contexts);
 //        } else {
 //            dataset = originalDataset;
@@ -200,13 +207,10 @@ public class Experiment_Main
 //        ModelIF<Object, Object, ContextIF> model1;
 //        ModelIF<Object, Object, ContextIF> model2;
 
-
-        TransformationManager.TransformationMethod method = TransformationManager.TransformationMethod.Basic;
-        TransformationManager.TransformationLevel level = TransformationManager.TransformationLevel.IndividualContext;
-        
-        TransformationManager manager= new TransformationManager(method, level);        
-        model= manager.toExplicit(model);
-
+        if (applyImplicitToExplicitFeedbackTransformation){
+            TransformationManager manager= new TransformationManager(transformationMethod, tranformationLevel, contextsToAnalyze);
+            model = manager.toExplicit(model);
+        }
         
         logger.info("Data loaded");
         final StringBuilder datasetInfo = new StringBuilder();
@@ -322,7 +326,7 @@ public class Experiment_Main
                 }
                 recommenderString += "]";
             }
-            else if (!item_split){
+            else if (!applyItemSplittingPreFiltering){
                 recommenderString += "[C=ALL]";                
             }
             
@@ -343,13 +347,13 @@ public class Experiment_Main
                         for (ContextDefinition ctxDef : allCategoricalContextDefinitions){
                             if (ctxDef.getName().equalsIgnoreCase(context)){
                                 selectedCategoricalContextDefinitions.add(ctxDef);
-                                logger.info("Filtering by " + context + " categorical context");
+                                logger.log(Level.INFO, "Filtering by {0} categorical context", context);
                             }
                         }
                         for (TimeContext tc : TimeContext.values()){
                             if (tc.name().equalsIgnoreCase(context)){
                                 selectedCategoricalContextDefinitions.add(new TimeContextDefinition(context));                                
-                                logger.info("Filtering by " + context + " time context");
+                                logger.log(Level.INFO, "Filtering by {0} time context", context);
                             }
                         }
                     }
@@ -981,10 +985,10 @@ public class Experiment_Main
             else if (arg.startsWith("item_split")){
                 String[] sm = arg.split("=");
                 if (sm[1].equalsIgnoreCase("true")){
-                    item_split = true;    
+                    applyItemSplittingPreFiltering = true;    
                 }
                 else if (sm[1].equalsIgnoreCase("false")){
-                    item_split = true;                        
+                    applyItemSplittingPreFiltering = true;                        
                 }
                 else{
                     System.err.println("unrecognized option: " + arg);
@@ -992,7 +996,7 @@ public class Experiment_Main
                 }
             }
             else if (arg.startsWith("is_impurity")){
-                item_split = true;
+                applyItemSplittingPreFiltering = true;
                 String[] sm = arg.split("=");
                 String[] smi = sm[1].split(",");
                 
@@ -1049,7 +1053,7 @@ public class Experiment_Main
                 }
             }
             else if (arg.startsWith("is_context")){
-                item_split = true;
+                applyItemSplittingPreFiltering = true;
                 is_contexts = new ArrayList<String>();
                 String[] sm = arg.split("=");
                 is_contexts.addAll(Arrays.asList(sm[1].split(",")));

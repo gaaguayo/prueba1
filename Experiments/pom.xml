@@ -72,11 +72,6 @@
             <artifactId>argparse4j</artifactId>
             <version>0.4.4</version>
         </dependency>
-        <dependency>
-            <groupId>SortArrays</groupId>
-            <artifactId>SortArrays</artifactId>
-            <version>1.0</version>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
