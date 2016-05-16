@@ -37,6 +37,7 @@ public class Experiment extends Experiment_Main
 //        is_contexts = Arrays.asList("year","company","daytype","release_weekend");
 //        is_contexts = Arrays.asList("will_recommend");
 //        filtering_contexts = Arrays.asList("year","company","daytype","release_weekend","will_recommend");
+        is_contexts = Arrays.asList("daytype");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype");
 //        filtering_contexts = Arrays.asList("quadrant");
