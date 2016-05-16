@@ -46,6 +46,10 @@ public class RecommendationList<U,I> {
         recommendations.add(recommendation);
     }
     
+    public List<RecommendationIF<I>> getRecommendations(){
+        return this.recommendations;
+    }
+    
     public void sort(){
         Collections.sort(recommendations);
     }

@@ -62,13 +62,13 @@ public class DatasetSplitter_Holdout<U,I,C extends ContextIF> implements Dataset
                 if (result == 0)
                     result = m1.getItems().size() - m2.getItems().size();
 
-                if (result == 0){
-                    List<U> l1 = new ArrayList(m1.getUsers());
-                    List<U> l2 = new ArrayList(m2.getUsers());
-                    U u1 = l1.get(0);
-                    U u2 = l2.get(0);
-                    result = u1.hashCode() - u2.hashCode();
-                }
+//                if (result == 0){
+//                    List<U> l1 = new ArrayList(m1.getUsers());
+//                    List<U> l2 = new ArrayList(m2.getUsers());
+//                    U u1 = l1.get(0);
+//                    U u2 = l2.get(0);
+//                    result = u1.hashCode() - u2.hashCode();
+//                }
 
                 if (result == 0){
 //                    result = m1.hashCode() - m2.hashCode();
@@ -78,7 +78,7 @@ public class DatasetSplitter_Holdout<U,I,C extends ContextIF> implements Dataset
                     result = utils1.getFeedbackRecordsCount() - utils2.getFeedbackRecordsCount();
                     
                     if (result == 0)
-                        result = (int)(utils1.getMeanRating()*1000.0) - (int)(utils2.getMeanRating()*1000.0);
+                        result = ((int)(utils1.getMeanRating()*1000.0)) - ((int)(utils2.getMeanRating()*1000.0));
                     
                 }
                     

@@ -38,14 +38,14 @@ public class ProportionImpurity<U,I,C extends ContextIF> extends AbstractImpurit
             }
         }
         
-        double pA = highA / (double)preferencesA.size();
-        double pB = highB / (double)preferencesB.size();
-        double p = (pA * preferencesA.size() + pB * preferencesB.size()) / (double)(preferencesA.size() + preferencesB.size());
+        double pA = (double)highA / (double)preferencesA.size();
+        double pB = (double)highB / (double)preferencesB.size();
+        double p = (double)(pA * preferencesA.size() + pB * preferencesB.size()) / (double)(preferencesA.size() + preferencesB.size());
 
         double numerator = pA - pB;
-        double denominator = Math.sqrt(p * (1 - p) * (1.0 / preferencesA.size() + 1.0 / preferencesB.size()));
+        double denominator = Math.sqrt(p * (1.0 - p) * ( (1.0 / (double)preferencesA.size()) + (1.0 / (double)preferencesB.size())));
         
-        double t_prop = numerator / denominator;
+        double t_prop = Math.abs(numerator / denominator);
         
         return t_prop;
     }

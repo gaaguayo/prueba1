@@ -1,7 +1,7 @@
 package es.uam.eps.ir.experiments;
 
-
 import ImplicitToExplicitTransformation.TransformationManager;
+import cars.context.ContextDefinitionManager;
 import es.uam.eps.ir.cars.bias.ModelBasedRecommender;
 import es.uam.eps.ir.cars.inferred.ContinuousTimeContextComputerBuilder.TimeContext;
 import es.uam.eps.ir.cars.inferred.TimeContextDefinition;
@@ -87,7 +87,7 @@ public class Experiment_Main
     static CandidateItemsBuilder.CANDIDATE_ITEMS candidates; // items to be ranked in top-N recommendation
     static float relevance_threshold=(float) 0.0; // rating threshold for relevance assessment
     static NonPersonalizedPrediction.Type non_personalized; // defaul rating value
-    static boolean controlPredictionValue = false; // adjust prediction values? (shrink to min/max rating value)
+    static boolean trimPredictionValue = false; // adjust prediction values? (shrink to min/max rating value)
     static boolean genTrainingAndTestFiles = false; // save training and test data in text files?
     
     // Evaluation Metrics
@@ -130,7 +130,7 @@ public class Experiment_Main
     // Results Saving
     static boolean skipIfResultsExist = false;
     static boolean SAVE_RESULTS = true;
-    static boolean SAVE_CLASSIFICATION_RESULTS = true;
+    static boolean SAVE_CLASSIFICATION_RESULTS = false;
     static boolean SAVE_DETAILED_RESULTS = false;
     static boolean SEND_EMAIL_REPORT=false;
     static boolean SEND_RESULT_FILES=false;
@@ -336,39 +336,13 @@ public class Experiment_Main
             }
             
             recommenderString += "_NonPers=" + non_personalized;
-            List<ContextDefinition> selectedCategoricalContextDefinitions = null;
-            List<TimeContext> selectedContinuousTimeContextDefinitions = null;
-            // Slicer (for pre/post-filtering)
-            if (filtering_contexts != null){
-                if (dataset instanceof ContextualDatasetIF){
-                    List<ContextDefinition> allCategoricalContextDefinitions = ((ContextualDatasetIF)dataset).getContextDefinitions();
-                    selectedCategoricalContextDefinitions = new ArrayList<ContextDefinition>();
-                    for (String context : filtering_contexts){
-                        for (ContextDefinition ctxDef : allCategoricalContextDefinitions){
-                            if (ctxDef.getName().equalsIgnoreCase(context)){
-                                selectedCategoricalContextDefinitions.add(ctxDef);
-                                logger.log(Level.INFO, "Filtering by {0} categorical context", context);
-                            }
-                        }
-                        for (TimeContext tc : TimeContext.values()){
-                            if (tc.name().equalsIgnoreCase(context)){
-                                selectedCategoricalContextDefinitions.add(new TimeContextDefinition(context));                                
-                                logger.log(Level.INFO, "Filtering by {0} time context", context);
-                            }
-                        }
-                    }
-                }
-//                else{
-//                    selectedContinuousTimeContextDefinitions = new ArrayList<TimeContext>();
-//                    for (String context : filtering_contexts){
-//                        for (TimeContext tc : TimeContext.values()){
-//                            if (tc.name().equalsIgnoreCase(context)){
-//                                selectedContinuousTimeContextDefinitions.add(tc);
-//                            }
-//                        }
-//                    }
-//                }
-            }                        
+            
+            // Context(s) for contextual pre/post filtering or modeling
+            List<ContextDefinition> selectedCategoricalContextDefinitions = ContextDefinitionManager.getContextDefinitions(dataset, filtering_contexts);
+            for (ContextDefinition ctxDef : selectedCategoricalContextDefinitions){
+                logger.log(Level.INFO, "Filtering by {0} context", ctxDef.getName());
+            }
+            
             EXPERIMENT_DESCRIPTION = datasetString  + "/" + datasetDetailsString + "__"  + recommenderString + "__" + splitter + candidates + "_" + relevance_threshold + "__";
 
             // Check if previous results file exist
@@ -393,7 +367,7 @@ public class Experiment_Main
                     .halfLifeProp(halfLifeProportion)
                     .trTimespan(split)
                     .categoricalContextFilter(selectedCategoricalContextDefinitions)
-                    .continuousTimeContextFilter(selectedContinuousTimeContextDefinitions)
+//                    .continuousTimeContextFilter(selectedContinuousTimeContextDefinitions)
                     .optimizationData(splitter, split)
                     .getRecommender(recommender_method, split.getTrainingSet());
             final StringBuilder recommenderInfo = new StringBuilder();
@@ -408,7 +382,7 @@ public class Experiment_Main
             checkMem();
             
             // Processing split            
-            processer.processSplit(recommender, split, candidateItemsBuilder, non_personalized, levels, rankingMetrics, errorMetrics, SAVE_CLASSIFICATION_RESULTS || SAVE_DETAILED_RESULTS, SEND_EMAIL_REPORT, controlPredictionValue);
+            processer.processSplit(recommender, split, candidateItemsBuilder, non_personalized, levels, rankingMetrics, errorMetrics, SAVE_CLASSIFICATION_RESULTS || SAVE_DETAILED_RESULTS, SEND_EMAIL_REPORT, trimPredictionValue);
             
 
             // Post processing
@@ -579,19 +553,26 @@ public class Experiment_Main
             List<ContextDefinition> allContextDefinitions = ((ContextualDatasetIF)dataset).getContextDefinitions();
             List<ContextDefinition> selectedContextDefinitions = new ArrayList<ContextDefinition>();
             for (String context : contexts){
+                boolean contextFound = false;
                 for (ContextDefinition ctxDef : allContextDefinitions){
                     if (ctxDef.getName().equalsIgnoreCase(context)){
                         selectedContextDefinitions.add(ctxDef);
                         logger.info("Item splitting by " + context + " categorical context");
+                        contextFound=true;
                     }
                 }                
                 for (TimeContext tc : TimeContext.values()){
                     if (tc.name().equalsIgnoreCase(context)){
                         selectedContextDefinitions.add(new TimeContextDefinition(context));
                         logger.info("Item splitting by " + context + " time context");
+                        contextFound=true;
                     }
                 }
-            }            
+                if (!contextFound){
+                    new RuntimeException("Context " + context + " not found!").printStackTrace();
+                    System.exit(1);
+                }                
+            }
             itemSplitter = new CategoricalContextItemSplitter(impurityComputer, selectedContextDefinitions);
             itemSplitter.setMinContextSize(minContextSize);
             ItemSplittingExplicitModel trainingModel = new ItemSplittingExplicitModel(itemSplitter, originalSplit.getTrainingSet());
@@ -759,10 +740,10 @@ public class Experiment_Main
                 .action(new PrintMessageAction("Available default prediction strategies:" + Arrays.toString(NonPersonalizedPrediction.Type.values()).replaceAll("\\[", "").replaceAll("\\]", "")))
                 .help("diplay available default prediction strategies");
 
-        metricsParser.addArgument("--check_prediction_values")
+        metricsParser.addArgument("--trim_prediction_values")
                 .action(Arguments.storeTrue())
                 .setDefault(false)
-                .help("turn on the cheking of prediction value limits (avoids values below or above the minimum and maximum rating value, respectively)");
+                .help("turn on the trim of prediction value limits (avoids values below or above the minimum and maximum rating value, respectively)");
 
         // item splitting options
         ArgumentGroup itemSplittingParser = parser.addArgumentGroup("item_splitting");
@@ -861,7 +842,7 @@ public class Experiment_Main
             errorMetrics = CommonErrorMetrics.METRICS.valueOf((String)mainNS.get("error"));
             rankingMetrics = CommonRankingMetrics.METRICS.valueOf((String)mainNS.get("ranking"));
             non_personalized = NonPersonalizedPrediction.Type.valueOf((String)mainNS.get("default_prediction"));
-            controlPredictionValue = mainNS.get("check_prediction_values");
+            trimPredictionValue = mainNS.get("trim_prediction_values");
             
             // item_splitting
             impurity = CommonImpurityComputers.IMPURITY.valueOf((String)mainNS.get("is_impurity"));
@@ -1487,10 +1468,10 @@ public class Experiment_Main
             else if (arg.startsWith("control_predictions")){
                 String[] sm = arg.split("=");
                 if (sm[1].equalsIgnoreCase("true")){
-                    controlPredictionValue = true;
+                    trimPredictionValue = true;
                 }
                 else{
-                    controlPredictionValue = false;
+                    trimPredictionValue = false;
                 }
             }
             else if (arg.startsWith("knn_min_common_ratings")){
