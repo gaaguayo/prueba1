@@ -1,24 +1,26 @@
-package es.uam.eps.ir.dataset;
+package dataset.Foursquare;
 
 import es.uam.eps.ir.cars.model.ContinuousTimeModelReader;
 import es.uam.eps.ir.core.context.ContinuousTimeContextIF;
+import es.uam.eps.ir.dataset.AbstractDataset;
+import es.uam.eps.ir.dataset.DatasetIF;
 
 /**
  *
  * @author pedro
  */
-public class FoursquareQuadrantsDataset<U,I,C extends ContinuousTimeContextIF> extends AbstractDataset<U,I,C> implements DatasetIF<U,I,C>{
+public class FoursquareQuadrants_oldDataset<U,I,C extends ContinuousTimeContextIF> extends AbstractDataset<U,I,C> implements DatasetIF<U,I,C>{
 
-    public FoursquareQuadrantsDataset(String path, String file) {
+    public FoursquareQuadrants_oldDataset(String path, String file) {
         super(path, file);
     }
     
-    public FoursquareQuadrantsDataset(String[] args) {
+    public FoursquareQuadrants_oldDataset(String[] args) {
         super(args);
     }
     
 
-    public FoursquareQuadrantsDataset() {
+    public FoursquareQuadrants_oldDataset() {
         super();
     }
     

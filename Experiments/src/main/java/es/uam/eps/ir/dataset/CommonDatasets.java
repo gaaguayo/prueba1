@@ -1,5 +1,7 @@
 package es.uam.eps.ir.dataset;
 
+import dataset.Foursquare.FoursquareQuadrantsCategoricalDataset;
+import dataset.Foursquare.FoursquareQuadrantsDataset;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.dataset.Context_IRG.Context_Movies_IRG_Dataset;
 import es.uam.eps.ir.dataset.Context_IRG.Context_Musicians_IRG_Dataset;
@@ -48,6 +50,7 @@ public class CommonDatasets<U,I,C extends ContextIF> {
         Context_Musicians_IRG,
         Context_LDOS_CoMoDa,
         Context_Adomavicius,
+        Context_Adomavicius_BaltrunasUMUAI,
         FoursquareQuadrants,
         FoursquareQuadrantsCategorical,
     }
@@ -152,6 +155,9 @@ public class CommonDatasets<U,I,C extends ContextIF> {
                 break;
             case Context_Adomavicius:
                 dataset = new Context_Adomavicius_Dataset(args);
+                break;
+            case Context_Adomavicius_BaltrunasUMUAI:
+                dataset = new Context_Adomavicius_BaltrunasUMUAI_Dataset(args);
                 break;
             case FoursquareQuadrants:
                 dataset = new FoursquareQuadrantsDataset(args);

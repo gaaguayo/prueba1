@@ -76,7 +76,7 @@ public class Experiment_Main
     static CandidateItemsBuilder.CANDIDATE_ITEMS candidates; // items to be ranked in top-N recommendation
     static float relevance_threshold=(float) 0.0; // rating threshold for relevance assessment
     static NonPersonalizedPrediction.Type non_personalized; // defaul rating value
-    static boolean controlPredictionValue = false; // adjust prediction values? (shrink to min/max rating value)
+    static boolean trimPredictionValue = false; // adjust prediction values? (shrink to min/max rating value)
     static boolean genTrainingAndTestFiles = false; // save training and test data in text files?
     
     // Evaluation Metrics
@@ -119,7 +119,7 @@ public class Experiment_Main
     // Results Saving
     static boolean skipIfResultsExist = false;
     static boolean SAVE_RESULTS = true;
-    static boolean SAVE_CLASSIFICATION_RESULTS = true;
+    static boolean SAVE_CLASSIFICATION_RESULTS = false;
     static boolean SAVE_DETAILED_RESULTS = false;
     static boolean SEND_EMAIL_REPORT=false;
     static boolean SEND_RESULT_FILES=false;
@@ -381,7 +381,7 @@ public class Experiment_Main
             checkMem();
             
             // Processing split            
-            processer.processSplit(recommender, split, candidateItemsBuilder, non_personalized, levels, rankingMetrics, errorMetrics, SAVE_CLASSIFICATION_RESULTS || SAVE_DETAILED_RESULTS, SEND_EMAIL_REPORT, controlPredictionValue);
+            processer.processSplit(recommender, split, candidateItemsBuilder, non_personalized, levels, rankingMetrics, errorMetrics, SAVE_CLASSIFICATION_RESULTS || SAVE_DETAILED_RESULTS, SEND_EMAIL_REPORT, trimPredictionValue);
             
 
             // Post processing
@@ -552,19 +552,26 @@ public class Experiment_Main
             List<ContextDefinition> allContextDefinitions = ((ContextualDatasetIF)dataset).getContextDefinitions();
             List<ContextDefinition> selectedContextDefinitions = new ArrayList<ContextDefinition>();
             for (String context : contexts){
+                boolean contextFound = false;
                 for (ContextDefinition ctxDef : allContextDefinitions){
                     if (ctxDef.getName().equalsIgnoreCase(context)){
                         selectedContextDefinitions.add(ctxDef);
                         logger.info("Item splitting by " + context + " categorical context");
+                        contextFound=true;
                     }
                 }                
                 for (TimeContext tc : TimeContext.values()){
                     if (tc.name().equalsIgnoreCase(context)){
                         selectedContextDefinitions.add(new TimeContextDefinition(context));
                         logger.info("Item splitting by " + context + " time context");
+                        contextFound=true;
                     }
                 }
-            }            
+                if (!contextFound){
+                    new RuntimeException("Context " + context + " not found!").printStackTrace();
+                    System.exit(1);
+                }                
+            }
             itemSplitter = new CategoricalContextItemSplitter(impurityComputer, selectedContextDefinitions);
             itemSplitter.setMinContextSize(minContextSize);
             ItemSplittingExplicitModel trainingModel = new ItemSplittingExplicitModel(itemSplitter, originalSplit.getTrainingSet());
@@ -732,10 +739,10 @@ public class Experiment_Main
                 .action(new PrintMessageAction("Available default prediction strategies:" + Arrays.toString(NonPersonalizedPrediction.Type.values()).replaceAll("\\[", "").replaceAll("\\]", "")))
                 .help("diplay available default prediction strategies");
 
-        metricsParser.addArgument("--check_prediction_values")
+        metricsParser.addArgument("--trim_prediction_values")
                 .action(Arguments.storeTrue())
                 .setDefault(false)
-                .help("turn on the cheking of prediction value limits (avoids values below or above the minimum and maximum rating value, respectively)");
+                .help("turn on the trim of prediction value limits (avoids values below or above the minimum and maximum rating value, respectively)");
 
         // item splitting options
         ArgumentGroup itemSplittingParser = parser.addArgumentGroup("item_splitting");
@@ -834,7 +841,7 @@ public class Experiment_Main
             errorMetrics = CommonErrorMetrics.METRICS.valueOf((String)mainNS.get("error"));
             rankingMetrics = CommonRankingMetrics.METRICS.valueOf((String)mainNS.get("ranking"));
             non_personalized = NonPersonalizedPrediction.Type.valueOf((String)mainNS.get("default_prediction"));
-            controlPredictionValue = mainNS.get("check_prediction_values");
+            trimPredictionValue = mainNS.get("trim_prediction_values");
             
             // item_splitting
             impurity = CommonImpurityComputers.IMPURITY.valueOf((String)mainNS.get("is_impurity"));
@@ -1460,10 +1467,10 @@ public class Experiment_Main
             else if (arg.startsWith("control_predictions")){
                 String[] sm = arg.split("=");
                 if (sm[1].equalsIgnoreCase("true")){
-                    controlPredictionValue = true;
+                    trimPredictionValue = true;
                 }
                 else{
-                    controlPredictionValue = false;
+                    trimPredictionValue = false;
                 }
             }
             else if (arg.startsWith("knn_min_common_ratings")){

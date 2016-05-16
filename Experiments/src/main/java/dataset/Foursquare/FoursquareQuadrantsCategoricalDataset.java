@@ -1,9 +1,11 @@
-package es.uam.eps.ir.dataset;
+package dataset.Foursquare;
 
 import es.uam.eps.ir.cars.model.TimestampedCategoricalContextModelReader;
 import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
+import es.uam.eps.ir.dataset.AbstractDataset;
+import es.uam.eps.ir.dataset.ContextualDatasetIF;
 import java.util.ArrayList;
 import java.util.List;
 
