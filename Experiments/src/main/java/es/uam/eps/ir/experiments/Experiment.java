@@ -1,15 +1,10 @@
 package es.uam.eps.ir.experiments;
 
 import ImplicitToExplicitTransformation.TransformationManager;
-import es.uam.eps.ir.cars.itemsplitting.FisherExactImpurity;
-import es.uam.eps.ir.cars.itemsplitting.InformationGainImpurity;
-import es.uam.eps.ir.cars.itemsplitting.MeanImpurity;
-import es.uam.eps.ir.core.context.ContextDefinition;
 import es.uam.eps.ir.dataset.CommonDatasets;
 import es.uam.eps.ir.nonpersonalized.NonPersonalizedPrediction;
 import es.uam.eps.ir.rank.CandidateItemsBuilder;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 /**
  *
@@ -25,7 +20,7 @@ public class Experiment extends Experiment_Main
         CONFIG_FILE = "F:/experiments/global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
-        dataset_name = CommonDatasets.DATASET.Context_LDOS_CoMoDa;
+        dataset_name = CommonDatasets.DATASET.FoursquareQuadrants;
         // Dataset_ItemSplit
         impurity = CommonImpurityComputers.IMPURITY.NoSplitting;
         is_impurityThreshold = 1.9673; //Proportion/Mean: 1.9673; Chi: 3.84
@@ -36,30 +31,32 @@ public class Experiment extends Experiment_Main
 //        is_contexts = Arrays.asList("PeriodOfWeek");
 //        is_contexts = Arrays.asList("PeriodOfDay");
 //        is_contexts = Arrays.asList("day","week","company");
-        is_contexts = Arrays.asList("time","daytype","season","location","weather","social","endEmo","dominantEmo","mood","physical","decision","");
+//        is_contexts = Arrays.asList("time","daytype","season","location","weather","social","endEmo","dominantEmo","mood","physical","decision","");
 //        is_contexts = Arrays.asList("quadrant");
 //        is_contexts = Arrays.asList("year","company","daytype","release_weekend","will_recommend");
 //        is_contexts = Arrays.asList("year","company","daytype","release_weekend");
 //        is_contexts = Arrays.asList("will_recommend");
 //        filtering_contexts = Arrays.asList("year","company","daytype","release_weekend","will_recommend");
-        is_contexts = Arrays.asList("daytype");
+//        is_contexts = Arrays.asList("daytype");
 //        filtering_contexts = Arrays.asList("Company","Week","Day");
 //        filtering_contexts = Arrays.asList("daytype","conpany");
-//        filtering_contexts = Arrays.asList("quadrant");
+        filtering_contexts = Arrays.asList("quadrant8");
 //        filtering_contexts = Arrays.asList("PeriodOfWeek");
     
         // Dataset_ImplicitToExplicitFeedback
-        applyImplicitToExplicitFeedbackTransformation = false; // Perform context-aware implicit to explicit feeback transformation?
-        contextsToAnalyze = null;
+        applyImplicitToExplicitFeedbackTransformation = true; // Perform context-aware implicit to explicit feeback transformation?
+        implicitToExplicit_contexts = Arrays.asList("quadrant8");
+//        implicitToExplicit_contexts = Arrays.asList("PeriodOfWeek");
         transformationMethod = TransformationManager.TransformationMethod.Basic;
         tranformationLevel = TransformationManager.TransformationLevel.IndividualContext;
+        saveExplicitModel = false;
         
         
         // Evaluation Methodology
         split_method        = CommonDatasetSplitters.METHOD.CommunityXFold_CV;
-        testProportion = 0.1;
+        testProportion = 0.2;
         testSize = 5;
-        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.USER_TEST;
+        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.COMMUNITY_TEST;
         relevance_threshold=(float) 1.0;
         nForOnePlusRandom = 10;
         
@@ -68,7 +65,7 @@ public class Experiment extends Experiment_Main
         genTrainingAndTestFiles = false;
     
         // Evaluation Metrics
-        rankingMetrics = CommonRankingMetrics.METRICS.NONE;
+        rankingMetrics = CommonRankingMetrics.METRICS.COMMON;
         errorMetrics = CommonErrorMetrics.METRICS.ALL;
         levels = Arrays.asList(5,10,20,50);
     
@@ -78,10 +75,10 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.kNN_FPOF_UserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_UserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_POF_UserBased_Categorical;
-//        //recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualPOF_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.ContextualFPOF_MahoutUserBased;
-//        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
+        recommender_method  = CommonRecommenders.METHOD.kNN_PRF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_POF_MahoutUserBased_Categorical;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_CM_MahoutUserBased_Categorical;
@@ -113,7 +110,7 @@ public class Experiment extends Experiment_Main
 //        recommender_method  = CommonRecommenders.METHOD.MF_Optimized;
 //        recommender_method  = CommonRecommenders.METHOD.Hybrid;
 //        recommender_method  = CommonRecommenders.METHOD.MF_Mahout;
-        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
+//        recommender_method  = CommonRecommenders.METHOD.kNN_UB_Mahout;
 //        recommender_method  = CommonRecommenders.METHOD.kNN_IB_Mahout;
     
     

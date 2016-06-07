@@ -75,9 +75,10 @@ public class Experiment_Main
     
     // Dataset_ImplicitToExplicitFeedback
     static boolean applyImplicitToExplicitFeedbackTransformation = false; // Perform context-aware implicit to explicit feeback transformation?
-    static List<ContextDefinition> contextsToAnalyze = null;
+    static List<String> implicitToExplicit_contexts = null;
     static TransformationManager.TransformationMethod transformationMethod = null;
     static TransformationManager.TransformationLevel tranformationLevel = null;
+    static boolean saveExplicitModel = false;
     
     
     // Evaluation Methodology
@@ -189,7 +190,7 @@ public class Experiment_Main
         
         // Data load
         logger.info("Loading data");
-        DatasetIF<Object, Object, ContextIF> originalDataset = new CommonDatasets(args).getDataset(dataset_name);
+//        DatasetIF<Object, Object, ContextIF> originalDataset = new CommonDatasets(args).getDataset(dataset_name);
         DatasetIF<Object, Object, ContextIF> dataset = new CommonDatasets(args).getDataset(dataset_name);
         
 //        DatasetIF<Object, Object, ContextIF> dataset;
@@ -208,8 +209,20 @@ public class Experiment_Main
 //        ModelIF<Object, Object, ContextIF> model2;
 
         if (applyImplicitToExplicitFeedbackTransformation){
-            TransformationManager manager= new TransformationManager(transformationMethod, tranformationLevel, contextsToAnalyze);
+            List<ContextDefinition> implicitToExplicit_contextDefinitions = ContextDefinitionManager.getContextDefinitions(dataset, implicitToExplicit_contexts);
+            for (ContextDefinition ctxDef : implicitToExplicit_contextDefinitions){
+                logger.log(Level.INFO, "Implicit To Explicit feedback transformation aware of {0} context", ctxDef.getName());
+            }
+            
+            TransformationManager manager= new TransformationManager(transformationMethod, tranformationLevel, implicitToExplicit_contextDefinitions);
             model = manager.toExplicit(model);
+            logger.info("Transformation completed");
+            if (saveExplicitModel){
+                String dataFile = dataset.getPath() + "\\" + dataset.toString() + "_explicit.txt.gz";
+                PrintUtils.toGz(dataFile , ModelPrintUtils.printModel2(model));
+                logger.log(Level.INFO, "Transformed explicit dataset saved in {0}", dataFile);
+            }
+
         }
         
         logger.info("Data loaded");
@@ -338,9 +351,12 @@ public class Experiment_Main
             recommenderString += "_NonPers=" + non_personalized;
             
             // Context(s) for contextual pre/post filtering or modeling
-            List<ContextDefinition> selectedCategoricalContextDefinitions = ContextDefinitionManager.getContextDefinitions(dataset, filtering_contexts);
-            for (ContextDefinition ctxDef : selectedCategoricalContextDefinitions){
-                logger.log(Level.INFO, "Filtering by {0} context", ctxDef.getName());
+            List<ContextDefinition> selectedCategoricalContextDefinitions = null;
+            if (filtering_contexts != null){
+                selectedCategoricalContextDefinitions = ContextDefinitionManager.getContextDefinitions(dataset, filtering_contexts);
+                for (ContextDefinition ctxDef : selectedCategoricalContextDefinitions){
+                    logger.log(Level.INFO, "Filtering by {0} context", ctxDef.getName());
+                }
             }
             
             EXPERIMENT_DESCRIPTION = datasetString  + "/" + datasetDetailsString + "__"  + recommenderString + "__" + splitter + candidates + "_" + relevance_threshold + "__";

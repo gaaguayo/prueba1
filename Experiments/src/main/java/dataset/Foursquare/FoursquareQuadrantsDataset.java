@@ -43,7 +43,7 @@ public class FoursquareQuadrantsDataset<U,I,C extends ContextIF> extends Abstrac
         theReader.setItemIndex(1);
         theReader.setTimestampIndex(2);
         theReader.setTimestampFormat("dd-MM-yyyy HH:mm:ss");
-        theReader.setRatingIndex(8);
+//        theReader.setRatingIndex(8);
         
 //        int firstID=1;
 //        int lastID=2;
@@ -58,7 +58,7 @@ public class FoursquareQuadrantsDataset<U,I,C extends ContextIF> extends Abstrac
         theReader.addContext("quadrant8", 7, Arrays.asList("1","2","3","4","5","6","7","8"));
         
         theReader.setContainsTitleLine(false);
-//        theReader.setImplicitData();
+        theReader.setImplicitData();
 //        theReader.setIntegerKeys();
     }
     

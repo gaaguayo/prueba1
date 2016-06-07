@@ -26,7 +26,7 @@ public abstract class ContextAwereItoE<U, I, C extends ContextIF> {
     List<ContextIF> listacntxcont;
     Map<C,Map<I,Integer>> mapacontexto;
     Map<I,Integer> mapaitems;
-    List<ContextDefinition> cdef;
+    List<ContextDefinition> contextsToAnalyze;
     List<AccumulatedFrequency> lista= new ArrayList<AccumulatedFrequency>();
     Map<U,Map<C,Map<I,Integer>>> mapausuario=new HashMap<U,Map<C,Map<I,Integer>>>();
     
@@ -36,7 +36,7 @@ public abstract class ContextAwereItoE<U, I, C extends ContextIF> {
     
     public ContextAwereItoE(ModelIF<U, I, C> _model,List<ContextDefinition> _cdef, TransformationManager.TransformationMethod method) {
         model=_model;
-        cdef= _cdef;
+        contextsToAnalyze= _cdef;
         this.method=method;
     }
     
@@ -69,82 +69,57 @@ public abstract class ContextAwereItoE<U, I, C extends ContextIF> {
     
     public  void Separation (){
         listacntxcont= new ArrayList<ContextIF>();
-//             new HashMap<I,Integer>();
-        for(U u: model.getUsers())
-            { 
+        for(U u: model.getUsers()) { 
         
-        mapacontexto= new HashMap<C,Map<I,Integer>>();
-        Collection<? extends PreferenceIF<U,I,C>> userprefs= model.getPreferencesFromUser(u);
-        for(PreferenceIF p:userprefs)
-            {
-        ContextContainer cntx= new ContextContainer();    
-            I i= (I) p.getItem();
+            mapacontexto= new HashMap<C,Map<I,Integer>>();
+            Collection<? extends PreferenceIF<U,I,C>> userprefs= model.getPreferencesFromUser(u);
+            for(PreferenceIF p:userprefs) {
+                ContextContainer cntx= new ContextContainer();    
+                I i= (I) p.getItem();
             
-            ContextIF c= p.getContext();
-            if (c instanceof ContextContainer)
-            {
-            ContextContainer cc = (ContextContainer)c;
+                ContextIF c= p.getContext();
+                if (c instanceof ContextContainer) {
+                    ContextContainer cc = (ContextContainer)c;
             
-//            List<ContextIF> ctxs = cc.getContexts();
-            
-//                System.out.println(""+cntx.getContexts().size());
-//            String clave="";
+                    try{
+                        for (ContextDefinition ctxDef:contextsToAnalyze) {           
+//                            clave=clave+cc.getCategoricalContext(ctxDef).getValue();
+                            cntx.add(new CategoricalContext(ctxDef, ctxDef.getNominalValue(cc.getCategoricalContext(ctxDef).getValue())));
+                        }
+                    }catch(IndexOutOfBoundsException ex){
+                        continue;
+                    }
 
-                            try{
-                            
-                              for (ContextDefinition j:cdef) 
-                {           
-//                            clave=clave+cc.getCategoricalContext(j).getValue();
-                            cntx.add(new CategoricalContext(j,j.getNominalValue(cc.getCategoricalContext(j).getValue())));
-             
-                } 
-                                     
-                            }catch(IndexOutOfBoundsException ex){
-                                
-                                continue;
-                            }
-                            
-                if(!listacntxcont.contains(cntx))  
-                {listacntxcont.add(cntx);}
+                    if(!listacntxcont.contains(cntx))
+                        {listacntxcont.add(cntx);}
                     
-                         if (mapacontexto.containsKey((C)cntx)) 
-                                {
-                                mapaitems=mapacontexto.get((C)cntx);
-                                if (mapaitems.containsKey(i)) 
-                                    {
-                                    mapaitems.put(i, mapaitems.get(i)+1);
-                                      
-                                    }
-                                 else
-                                    {
-                                    mapaitems.put(i,1);
-                                    
-                                    }
-                                }
-                            else
-                                {
-                                mapaitems=new HashMap<I,Integer>() ;
-                                mapaitems.put(i,1);
-                                mapacontexto.put((C)cntx, mapaitems);
-                               
-                                }                           
+                    if (mapacontexto.containsKey((C)cntx)) {
+                        mapaitems=mapacontexto.get((C)cntx);
+                        if (mapaitems.containsKey(i)){
+                            mapaitems.put(i, mapaitems.get(i)+1);
+                        }
+                        else {
+                            mapaitems.put(i,1);
+                        }
+                    }
+                    else {
+                        mapaitems=new HashMap<I,Integer>();
+                        mapaitems.put(i,1);
+                        mapacontexto.put((C)cntx, mapaitems);
+                    }
                 }  
-            mapausuario.put(u, mapacontexto);
+                mapausuario.put(u, mapacontexto);
             } 
-         
-        
-        
         }
-       
-      Send_to_ImplicitToExplicitFeedback();
-      
-    } 
+      Send_to_ImplicitToExplicitFeedback();      
+    }
+    
     public ModelIF<U, I, C> getmodel(){
-    return model2;
+        return model2;
     }
     
     public List<ContextIF> getlistcontext(){
-    return  listacntxcont;
+        return  listacntxcont;
     }
     
     public abstract void Send_to_ImplicitToExplicitFeedback();

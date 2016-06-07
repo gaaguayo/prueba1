@@ -1,7 +1,6 @@
 package utils;
 
 import es.uam.eps.ir.core.util.ContextualModelUtils;
-import es.uam.eps.ir.core.util.ContextualModelUtils;
 import es.uam.eps.ir.core.context.ContextIF;
 import es.uam.eps.ir.core.model.ModelIF;
 import java.util.Locale;
@@ -41,7 +40,17 @@ public class SummaryPrinter<U,I,C extends ContextIF> {
         float _value = eModel.getMeanRating();
         String value = String.format(Locale.US,"%,7.4f",_value);
         summary.append(prefix).append("MeanRating\t").append(value).append(newline);
-        
+
+        // min rating
+        _value = eModel.getMinRating();
+        value = String.format(Locale.US,"%,7.4f",_value);
+        summary.append(prefix).append("MinRating\t").append(value).append(newline);
+
+        // max rating
+        _value = eModel.getMaxRating();
+        value = String.format(Locale.US,"%,7.4f",_value);
+        summary.append(prefix).append("MaxRating\t").append(value).append(newline);
+
         // Context-specific info
         try{
             summary.append(prefix).append("MinDate\t").append(eModel.getMinDate()).append(newline);
