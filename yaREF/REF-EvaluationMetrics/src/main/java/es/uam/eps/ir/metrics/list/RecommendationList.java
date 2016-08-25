@@ -27,9 +27,11 @@ public class RecommendationList<U,I> {
     public RecommendationList(RecommendationList<U,I> rl) {
         this.user = rl.user;
         this.relevantItems = new TreeSet<I>();
-        this.relevantItems.addAll(rl.relevantItems);
+        if (rl.relevantItems!=null)
+            this.relevantItems.addAll(rl.relevantItems);
         this.notRelevantItems = new TreeSet<I>();
-        this.notRelevantItems.addAll(rl.notRelevantItems);
+        if (rl.notRelevantItems!=null)
+            this.notRelevantItems.addAll(rl.notRelevantItems);
         this.recommendations = new ArrayList<RecommendationIF<I>>();
         this.recommendations.addAll(rl.recommendations);
     }
