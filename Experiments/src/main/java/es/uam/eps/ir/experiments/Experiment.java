@@ -17,7 +17,7 @@ public class Experiment extends Experiment_Main
         //////////////////////
         // PARAMETER VALUES //
         //////////////////////
-        CONFIG_FILE = "F:/experiments/global.config";
+        CONFIG_FILE = "C:/tesis/dataset/global.config";
 //        CONFIG_FILE = "/home/pedro/experiments/global.config";
         // Dataset
         dataset_name = CommonDatasets.DATASET.FoursquareQuadrants;
@@ -47,20 +47,20 @@ public class Experiment extends Experiment_Main
         applyImplicitToExplicitFeedbackTransformation = true; // Perform context-aware implicit to explicit feeback transformation?
         implicitToExplicit_contexts = Arrays.asList("quadrant8");
 //        implicitToExplicit_contexts = Arrays.asList("PeriodOfWeek");
-        transformationMethod = TransformationManager.TransformationMethod.Basic;
+        transformationMethod = TransformationManager.TransformationMethod.Final;
         tranformationLevel = TransformationManager.TransformationLevel.IndividualContext;
         saveExplicitModel = false;
         
         
         // Evaluation Methodology
-        split_method        = CommonDatasetSplitters.METHOD.CommunityXFold_CV;
+        split_method        = CommonDatasetSplitters.METHOD.UserRandomOrderProportionHoldout;
         testProportion = 0.2;
         testSize = 5;
-        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.COMMUNITY_TEST;
+        candidates    = CandidateItemsBuilder.CANDIDATE_ITEMS.ONE_PLUS_RANDOM;
         relevance_threshold=(float) 1.0;
         nForOnePlusRandom = 10;
         
-        non_personalized = NonPersonalizedPrediction.Type.None;
+        non_personalized = NonPersonalizedPrediction.Type.OverallMean;
         trimPredictionValue = true;
         genTrainingAndTestFiles = false;
     
@@ -151,7 +151,7 @@ public class Experiment extends Experiment_Main
         SEND_RESULT_FILES=false;
         EXPERIMENT_PREFIX = "";
         EXPERIMENT_DESCRIPTION = "";
-        RESULTS_PATH = "F:/experiments/"; //"/datos/experiments/";
+        RESULTS_PATH = "C:/tesis/dataset/experiment"; //"/datos/experiments/";
         level = Level.INFO;
     
         // execution statistics

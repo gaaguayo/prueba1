@@ -44,9 +44,7 @@ public class ImplicitToExplicitFeedbackFinal<U, I, C  extends ContextIF> extends
                 
            }
                frecuenciascomrelativa[indice]=Redondear((frecuenciascom[indice]/sum)*100,0); 
-//            System.out.println("fabsolutas"+frecuenciasabsolutas[indice]);
-//            System.out.println("fcomplementarias"+frecuenciascom[indice]);
-            System.out.println("fcomplerelativas"+frecuenciascomrelativa[indice]);
+
             indice++;
             
        }

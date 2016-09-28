@@ -22,6 +22,7 @@ public class ImplicitToExplicitFeedbackBasic<U, I, C extends ContextIF> extends 
        for (int i = 0; i < lista.size(); i++) 
        {     
            rating[i]=inverseFreq_to_rating(FC[i]);
+//           System.out.println("rating"+rating[i]);
        }      
      
        return Mapacontexto(rating);

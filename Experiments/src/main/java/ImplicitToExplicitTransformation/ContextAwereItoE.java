@@ -124,31 +124,5 @@ public abstract class ContextAwereItoE<U, I, C extends ContextIF> {
     
     public abstract void Send_to_ImplicitToExplicitFeedback();
      
-    public void Print(){
-        Print(listacntxcont, model2);
-    }
-      
-    public void Print(List<ContextIF> listacntxcont, ModelIF<U, I, C> model){
-   
-        for(ContextIF c:listacntxcont)
-     
-        { 
-            System.out.println("");
-            System.out.println("CONTEXTO: "+c);
-
-            System.out.println("");
-            for(U u : model.getUsers())
-            {
-                System.out.print("U:"+u);
-                System.out.print("\t");
-                for(I i: model.getItems())
-                {
-                    System.out.print(model.getPreferenceValue(u, i, (C)c)+"\t");        
-                }
-                System.out.println("");
-            }    
-    
-        } 
-         System.out.println("");
-   } 
+  
 }
